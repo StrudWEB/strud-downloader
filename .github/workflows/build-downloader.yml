@@ -1,0 +1,17 @@
+name: Build STRUD Downloader
+on:
+  workflow_dispatch:
+  push:
+    paths: ['downloader/**']
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '8.0.x' }
+      - run: dotnet publish downloader/StrudDownloader.csproj -c Release -o publish
+      - uses: actions/upload-artifact@v4
+        with:
+          name: STRUD-Downloader
+          path: publish/STRUD-Downloader.exe
