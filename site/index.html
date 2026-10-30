@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strud WEB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23262422'/%3E%3Ctext x='32' y='46' font-family='Arial' font-weight='800' font-size='40' text-anchor='middle' fill='%23b81440'%3ES%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#1a1917;--panel:#262422;--elev:#33302d;--text:#f4f2ee;--dim:#a8a29e;--blood:#b81440;--blood-dim:#850d2e;--sick:#a1b853;--border:#403d39;--glow:rgba(184,20,64,.2);--warn:#e0b84a}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+#navbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 24px;background:rgba(26,25,23,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.brand{font-weight:800;font-size:20px;letter-spacing:2px;text-transform:uppercase;color:var(--blood);display:flex;align-items:center;gap:10px;white-space:nowrap}
+.brand-logo,.auth-logo{border-radius:8px;display:block}
+.brand-logo{height:32px;width:32px}
+.auth-logo{height:64px;width:64px;margin:0 auto 12px}
+#navlinks{display:flex;gap:4px;flex-wrap:wrap}
+.navlink{padding:8px 12px;font-size:12.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);border:1px solid transparent;border-radius:3px;cursor:pointer}
+.navlink:hover{color:var(--text);border-color:var(--border)}
+.navlink.active{color:var(--text);background:var(--elev);border-color:var(--blood-dim)}
+#authbar{display:flex;align-items:center;gap:10px}
+.pill{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 10px;border-radius:2px;border:1px solid var(--border);color:var(--dim);background:var(--elev)}
+.pill.founder{color:#fff;background:var(--blood);border-color:var(--blood);font-weight:700}
+.pill.admin{color:#000;background:var(--sick);border-color:var(--sick);font-weight:700}
+.pill.clickable,.pill.me{cursor:pointer}
+.pill.me{display:inline-flex;align-items:center;gap:8px}
+.pill.clickable:hover,.pill.me:hover{border-color:var(--dim);color:var(--text)}
+.avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--elev);border:1px solid var(--border);flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--dim);text-transform:uppercase}
+.avatar.lg{width:32px;height:32px}
+.btn{font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 18px;background:var(--blood-dim);color:var(--text);border:1px solid var(--blood);border-radius:3px;cursor:pointer}
+.btn:hover{background:var(--blood);box-shadow:0 0 10px var(--glow)}
+.btn.ghost{background:transparent;border-color:var(--border);color:var(--dim)}
+.btn.ghost:hover{color:var(--text);border-color:var(--dim)}
+.btn.small{padding:5px 10px;font-size:11.5px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+main{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+.hero-section{text-align:center;margin:20px 0 40px;background:var(--panel);border:1px solid var(--border);padding:40px 20px;border-radius:4px}
+.hero-section h1{font-size:32px;color:var(--blood);margin:0 0 12px;text-transform:uppercase;font-weight:800}
+.hero-section p{font-size:14px;color:var(--dim);max-width:620px;margin:0 auto;line-height:1.6}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:32px}
+.feature-box{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:20px}
+.feature-box:hover{border-color:var(--blood-dim)}
+.feature-box h3{margin:0 0 8px;font-family:'IBM Plex Mono',monospace;font-size:13px;text-transform:uppercase}
+.feature-box p{margin:0;color:var(--dim);font-size:12.5px;line-height:1.5}
+.auth-wrap{max-width:400px;margin:60px auto;padding:32px;background:var(--panel);border:1px solid var(--border);border-radius:4px}
+.auth-wrap h1{font-weight:800;color:var(--blood);font-size:32px;margin:0 0 4px;text-align:center;letter-spacing:2px;text-transform:uppercase}
+.auth-sub{text-align:center;color:var(--dim);font-size:13px;margin-bottom:24px}
+.field{margin-bottom:16px;position:relative}
+.field label{display:block;font-size:11px;color:var(--dim);margin-bottom:6px;font-family:'IBM Plex Mono',monospace}
+.field input,.field textarea,.field select,.search-input{width:100%;padding:10px 12px;background:var(--elev);border:1px solid var(--border);color:var(--text);border-radius:3px;font-family:inherit;font-size:13.5px}
+.field textarea{resize:vertical;min-height:90px}
+.field input:focus,.field textarea:focus,.search-input:focus{outline:none;border-color:var(--blood)}
+.counter{position:absolute;bottom:-16px;right:4px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim)}
+.auth-toggle{text-align:center;margin-top:16px;font-size:13px;color:var(--dim)}
+.auth-toggle span,.edit-msg-btn{cursor:pointer;text-decoration:underline}
+.auth-toggle span{color:var(--blood)}
+.edit-msg-btn{margin-left:6px}
+.error-msg{color:#e26f6f;font-size:12px;margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.info-msg{color:var(--sick);font-size:12px;margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.feed-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.feed-header h2{font-weight:800;color:var(--blood);font-size:24px;margin:0}
+.search-filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.search-group{display:flex;gap:10px;flex:1;min-width:200px;flex-wrap:wrap}
+.search-input{flex:1;min-width:150px;padding:8px 12px;background:var(--panel);font-size:13px}
+.filter-tags,.sort-tags{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn,.sort-btn{background:var(--panel);border:1px solid var(--border);color:var(--dim);padding:6px 12px;font-size:12px;border-radius:3px;cursor:pointer;font-family:'IBM Plex Mono',monospace}
+.filter-btn.active,.sort-btn.active{background:var(--elev);color:var(--text);border-color:var(--sick)}
+.stats-banner{background:var(--panel);border-left:3px solid var(--blood-dim);padding:10px 16px;margin-bottom:24px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dim);display:flex;gap:16px;flex-wrap:wrap}
+.new-post-box,.post-card,.admin-section{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:20px}
+.new-post-box h3{margin:0 0 14px;font-size:13px;color:var(--dim);font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
+.form-row-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:650px){.form-row-grid{grid-template-columns:1fr}}
+.post-card:hover{border-color:var(--dim)}
+.post-meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.post-meta .avatar{width:22px;height:22px;font-size:10px}
+.post-meta .author{color:var(--sick);font-weight:500}
+.post-title{font-size:18px;font-weight:700;margin:0 0 10px;color:#fff}
+.post-content{font-size:14px;line-height:1.6;white-space:pre-wrap;margin-bottom:14px;word-break:break-word}
+.special-link-btn{display:inline-flex;gap:6px;background:var(--elev);border:1px solid var(--border);color:var(--sick);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 12px;border-radius:3px;margin-bottom:14px}
+.special-link-btn:hover{border-color:var(--sick)}
+.post-media-wrap{margin-bottom:14px;border-radius:3px;overflow:hidden;background:#000;border:1px solid var(--border)}
+.post-img,.post-video-element{width:100%;max-height:450px;object-fit:contain;display:block}
+.post-video-container{position:relative;padding-bottom:56.25%;height:0}
+.post-video-container iframe,.yt-facade{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yt-facade{cursor:pointer;background:#000 center/cover no-repeat;display:flex;align-items:center;justify-content:center}
+.yt-facade span{background:rgba(184,20,64,.9);color:#fff;width:64px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.post-gallery{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.post-gallery .post-media-wrap{margin-bottom:0}
+.post-gallery .post-img{max-height:220px}
+.post-rating{color:var(--warn);font-family:'IBM Plex Mono',monospace;font-size:12.5px;margin-bottom:10px}
+.hashtag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.hashtag-pill{background:var(--elev);border:1px solid var(--border);color:var(--sick);font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:3px 9px;border-radius:999px;cursor:pointer}
+.spoiler-wrap{position:relative;margin-bottom:14px}
+.spoiler-blur{filter:blur(14px);user-select:none;pointer-events:none}
+.spoiler-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,9,8,.55)}
+.spoiler-reveal-btn{background:var(--blood-dim);border:1px solid var(--blood);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12.5px;padding:8px 16px;border-radius:4px;cursor:pointer}
+.post-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px;border-top:1px solid rgba(255,255,255,.05);padding-top:14px}
+.react-btn{background:var(--elev);border:1px solid var(--border);color:var(--dim);padding:6px 12px;border-radius:3px;font-size:12px;cursor:pointer;font-family:'IBM Plex Mono',monospace}
+.react-btn:hover{border-color:var(--dim);color:var(--text)}
+.react-btn.active-like{color:var(--sick);border-color:var(--sick)}
+.react-btn.active-dislike{color:var(--blood);border-color:var(--blood)}
+.react-btn.active-fav{color:#cca333;border-color:#cca333}
+.empty-state{text-align:center;padding:60px 20px;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+.admin-section h3{font-family:'IBM Plex Mono',monospace;font-size:13px;text-transform:uppercase;color:var(--sick);margin:0 0 14px}
+.app-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.app-row:last-child{border-bottom:none}
+.app-row .txt{flex:1;min-width:0}
+.app-row .who{font-weight:700;font-size:13px}
+.app-row .msg{color:var(--dim);font-size:13px;margin-top:4px;word-break:break-word}
+.status-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:2px 8px;border-radius:2px}
+.status-tag.beklemede{background:#4a3f25;color:#cca333}
+.status-tag.kabul{background:#254a27;color:var(--sick)}
+.status-tag.red{background:#4a2529;color:#e26f6f}
+.status-tag.yellow{background:var(--warn);color:#000;font-weight:700}
+.msg-row{padding:12px;border-bottom:1px solid var(--border)}
+.msg-row:last-child{border-bottom:none}
+.msg-row .from{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim)}
+.msg-row .body{font-size:13px;margin-top:4px;word-break:break-word}
+.msg-row.yellow{background:rgba(224,184,74,.12);border-left:4px solid var(--warn)}
+.msg-row.yellow .from{color:var(--warn)}
+.msg-row.yellow .body{color:#ffe9a8}
+.chat-window{display:flex;flex-direction:column;height:60vh}
+.chat-messages{flex:1;overflow-y:auto;margin-bottom:14px;display:flex;flex-direction:column;gap:10px;padding:4px}
+.chat-bubble{max-width:75%;border:1px solid var(--border);border-radius:8px;padding:9px 13px}
+.chat-bubble.mine{align-self:flex-end;background:var(--blood-dim);border-color:var(--blood)}
+.chat-bubble.theirs{align-self:flex-start;background:var(--elev)}
+.chat-bubble .txt{font-size:13.5px;white-space:pre-wrap;line-height:1.4;word-break:break-word}
+.chat-bubble .time{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--dim);margin-top:5px}
+.chat-form{display:flex;gap:8px}
+.chat-form input{flex:1}
+.upload-row{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
+.upload-status{font-size:11px;color:var(--dim);font-family:'IBM Plex Mono',monospace}
+.upload-status.err{color:#e26f6f}
+.dropzone{border:2px dashed var(--border);border-radius:6px;padding:28px 16px;text-align:center;color:var(--dim);font-size:13px;cursor:pointer;margin-bottom:12px}
+.dropzone.over,.dropzone:hover{border-color:var(--blood);color:var(--text);background:rgba(184,20,64,.06)}
+.file-chip{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 10px;background:var(--elev);border:1px solid var(--border);border-radius:3px;margin-bottom:6px;font-family:'IBM Plex Mono',monospace;font-size:12px}
+.progress{height:6px;background:var(--elev);border-radius:3px;overflow:hidden;margin:10px 0}
+.progress i{display:block;height:100%;width:0;background:var(--blood);transition:width .2s}
+.game-cover{width:100%;max-height:300px;object-fit:cover;border-radius:3px;margin-bottom:14px;display:block;background:#000}
+footer{text-align:center;padding:40px 0;color:var(--dim);font-size:11px;font-family:'IBM Plex Mono',monospace}
+</style>
+</head>
+<body>
+<nav id="navbar">
+  <div class="brand"><img id="brandLogo" class="brand-logo" alt="">STRUD WEB</div>
+  <div id="navlinks"></div>
+  <div id="authbar"></div>
+</nav>
+<main id="main-content"></main>
+<footer id="siteFooter"></footer>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = "https://zxnsxueirtsxwxowlkfu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4bnN4dWVpcnRzeHd4b3dsa2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MjI3NTUsImV4cCI6MjA5OTk5ODc1NX0.jpf11yI3rLR8oyIXAz5Fn3z-Z0sjnuLOwgb4d3U6gRk";
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Küçük SVG logo (eski base64 PNG yerine)
+const LOGO = 'data:image/svg+xml,' + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='#262422'/><text x='32' y='46' font-family='Arial' font-weight='800' font-size='40' text-anchor='middle' fill='#b81440'>S</text></svg>");
+document.getElementById('brandLogo').src = LOGO;
+
+/* ================= İ18N ================= */
+let currentLang = localStorage.getItem('strud_lang') || null;
+const I18N = {
+tr:{
+ auth_sub:"Giriş Yapın",label_nickname:"RUMUZ (NICKNAME)",label_email:"GMAIL ADRESİ",email_note:"* 1 Gmail adresi başına 1 hesap oluşturulabilir.",label_password:"ŞİFRE",
+ btn_create_account:"Hesap Oluştur",btn_login:"Giriş Yap",btn_resend_confirmation:"Onay E-postasını Tekrar Gönder",toggle_have_account:"Zaten bir hesabın var mı?",toggle_login_link:"Giriş yap",toggle_no_account:"Hesabın yok mu?",toggle_signup_link:"Kayıt ol",
+ err_gmail_only:"Sadece @gmail.com uzantılı e-posta adresleri kabul edilir.",err_gmail_plus_limit:"Bu e-posta ile en fazla 2 hesap açılabilir: isim@gmail.com veya isim+2@gmail.com",err_nickname_short:"Rumuz en az 3 karakter olmalı.",
+ signup_pending_msg:"Kayıt oluşturuldu. E-postanıza gelen onay bağlantısına tıkladıktan sonra giriş yapabilirsiniz.",err_email_unconfirmed:"Bu e-posta henüz onaylanmamış.",switch_to_other_lang:"English",
+ nav_ana_sayfa:"Ana Sayfa",nav_destek:"Destek",nav_admin:"Adminlik",nav_arkadaslar:"Arkadaşlar",nav_yayinlar:"Oyun Yayınları",btn_logout:"Çıkış",role_founder:"KURUCU",role_admin:"ADMIN",
+ cat_oyun:"Oyunlar",cat_film:"Filmler",cat_video:"Videolar",cat_sohbet:"Sohbetler",cat_topluluk:"Topluluk",
+ home_hero_title:"STRUD TOPLULUK PLATFORMU",home_hero_desc:"Bağımsız paylaşım ve tartışma ağına hoş geldiniz.",
+ home_feat1_title:"Özelleştirilmiş Kategoriler",home_feat1_desc:"Oyunlar, filmler ve \"Topluluk\" kategorisi ile paylaşımlarınızı en doğru alanda sergileyin.",
+ home_feat2_title:"Fotoğraf & Video",home_feat2_desc:"Paylaşımlarınıza fotoğraf ve video (YouTube dahil) ekleyin.",
+ home_feat3_title:"Gelişmiş Sıralama",home_feat3_desc:"Popüler, Trend ve Yeni filtreleriyle içerikte kolayca gezin.",
+ home_feat4_title:"Oyun Yayınları",home_feat4_desc:"Kurucunun yayınladığı oyunları indirin.",home_explore_btn:"Topluluğu Keşfet",
+ stats_loading:"Metrikler toplanıyor...",stats_category_posts:"Kategori Gönderisi",stats_image_count:"Görsel Ekli",stats_video_count:"Video Ekli",
+ new_post_heading:"Yeni Gönderi Oluştur",label_post_title:"GÖNDERİ BAŞLIĞI",post_title_placeholder:"Başlık...",label_post_content:"İÇERİK DETAYI",post_content_placeholder:"Açıklama metni girin...",
+ label_game_store_link:"OYUN MAĞAZA SAYFASI URL (STEAM / EPIC VB.)",game_link_placeholder:"oyun link URL'si",label_movie_review_link:"FİLM İNCELEME / IMDB LINKI",movie_link_placeholder:"https://www.imdb.com/title/...",
+ label_image_url:"FOTOĞRAF URL (Opsiyonel)",btn_upload_pc:"📁 Bilgisayardan seç",upload_uploading:"Yükleniyor...",upload_done:"Yüklendi ✓",err_upload:"Yükleme başarısız: ",err_file_type:"Geçersiz dosya türü.",err_file_too_big:"Dosya çok büyük (en fazla {n} MB).",
+ avatar_change_title:"Profil fotoğrafını değiştir",image_url_placeholder:"Fotoğraf link URL'si",label_video_url:"VİDEO URL (Opsiyonel)",video_url_placeholder:"Video link URL'si (YouTube dahil)",btn_publish_post:"Gönderiyi Yayınla",
+ search_placeholder:"Anahtar kelime veya yazar ara...",filter_all:"Tümü",filter_images:"Görseller",filter_videos:"Videolar",sort_new:"Yeni",sort_popular:"Popüler",sort_trend:"Trend",
+ db_scanning:"Yükleniyor...",empty_no_data:"Kriterlere uygun kayıt bulunamadı.",store_link_btn:"🛒 Mağaza Sayfasına Git",review_link_btn:"🎬 İnceleme / IMDb",
+ favorite_btn:"Favori",report_btn:"🚩 Bildir",delete_btn:"Sil",edit_btn:"Düzenle",save_btn:"Kaydet",cancel_btn:"Vazgeç",confirm_delete_post:"Silmek istediğinize emin misiniz?",
+ report_prompt:"Raporlama gerekçesi?",report_success:"Rapor gönderildi.",err_action_failed:"İşlem başarısız: ",
+ friends_heading:"Arkadaşlar",friends_search_heading:"Kullanıcı Ara",friend_search_placeholder:"Rumuz ile ara...",btn_search:"Ara",incoming_requests_heading:"Gelen İstekler",btn_accept:"Kabul Et",btn_reject:"Reddet",
+ no_pending_requests:"Bekleyen istek yok.",outgoing_requests_heading:"Gönderdiğim İstekler",status_pending:"bekliyor",no_sent_requests:"Gönderilmiş istek yok.",my_friends_heading:"Arkadaşlarım",no_friends_yet:"Henüz arkadaşınız yok.",
+ btn_chat:"💬 Sohbet Et",no_results_found:"Sonuç bulunamadı.",btn_send_request:"İstek Gönder",btn_sent:"Gönderildi",err_request_failed:"İstek gönderilemedi: ",
+ user_not_found:"Kullanıcı bulunamadı.",chat_input_placeholder:"Mesaj yaz...",btn_send:"Gönder",no_messages_yet:"Henüz mesaj yok, ilk mesajı sen yaz.",edited_tag:"düzenlendi",err_message_edit_failed:"Mesaj düzenlenemedi: ",err_message_send_failed:"Mesaj gönderilemedi: ",confirm_delete_message:"Bu mesajı silmek istediğinize emin misiniz?",
+ destek_heading:"Destek",destek_desc:"Kural ihlalleri, hatalı içerikler ya da teknik sorunlar için site yönetimiyle iletişime geçin.",label_subject:"KONU",subject_placeholder:"Örn: Kural ihlali, hatalı sayfa...",label_detail:"DETAYLI AÇIKLAMA",detail_placeholder:"Durumu detaylıca açıklayın...",
+ btn_send_support:"Destek Talebini Gönder",err_support_failed:"Destek talebi iletilemedi: ",support_success:"Destek talebiniz iletildi. Teşekkürler.",
+ admin_heading:"Yönetim Kontrol Paneli",admin_sync:"Veriler yükleniyor...",mod_applications_heading:"Moderatör Yetki Başvuruları",no_applications:"Kayıtlı başvuru yok.",system_logs_heading:"Sistem Logları & Bildirimler",inbox_clean:"Gelen kutusu temiz.",
+ admin_note:"Sarı satırlar adminlerden gelen bildirimlerdir.",admin_tag:"ADMİN",role_sufficient:"Mevcut rolünüz işlem için yeterli.",request_status:"Talep Durumu:",application_form_heading:"Yetki Talep Formu",label_application_reason:"BAŞVURU GEREKÇESİ VE DENEYİMLER",application_placeholder:"Bilgileri buraya girin...",
+ btn_submit_form:"Formu İlet",contact_management_heading:"Üst Yönetime Mesaj İlet",label_message_detail:"MESAJ DETAYI",message_placeholder:"Mesajınızı yazın...",btn_send_message:"Mesajı Gönder",msg_sent_to_management:"Mesaj yönetime iletildi.",
+ status_kabul:"kabul",status_red:"red",status_beklemede:"beklemede",setup_complete_btn:"Kurulumu Tamamla",err_nickname_taken:"Bu rumuz zaten kayıtlı.",
+ footer_text:"© 2026 STRUD WEB — Tüm Hakları Saklıdır. | SS",capacity_full_title:"Kişi Kapasitesi doldu.",capacity_full_desc:"Daha sonra tekrar deneyin.",btn_retry:"Tekrar Dene",
+ label_image_url_2:"EK FOTOĞRAF URL 2 (Opsiyonel)",label_image_url_3:"EK FOTOĞRAF URL 3 (Opsiyonel)",label_hashtags:"ETİKETLER (virgülle ayırın)",hashtags_placeholder:"gaming, events",label_rating:"PUANINIZ (Opsiyonel)",rating_none:"Puan verme",
+ label_is_spoiler:"Bu gönderi spoiler içeriyor",btn_reveal_spoiler:"⚠️ Spoiler İçeriyor — Göstermek İçin Tıkla",spoiler_tag:"SPOILER",btn_load_more:"Daha Fazla Yükle",loading_more:"Yükleniyor...",
+ nav_bildirimler:"Bildirimler",notif_empty:"Henüz bildiriminiz yok.",notif_new_message:"Yeni mesaj",btn_mark_all_read:"Tümünü Okundu Say",
+ games_heading:"Oyun Yayınları",games_empty:"Henüz yayınlanmış oyun yok.",games_publish_heading:"Yeni Oyun Yayınla (Sadece Kurucu)",label_game_title:"OYUN ADI",label_game_desc:"AÇIKLAMA / SÜRÜM NOTLARI",label_game_cover:"KAPAK GÖRSELİ URL (Opsiyonel)",
+ drop_hint:"Oyun dosyalarını buraya sürükleyip bırakın veya tıklayıp seçin (zip, exe, apk, vb.)",btn_publish_game:"Oyunu Yayınla",btn_download:"⬇ İndir",err_need_files:"En az bir oyun dosyası ekleyin.",game_published:"Oyun yayınlandı ✓",confirm_delete_game:"Bu oyunu ve dosyalarını silmek istediğinize emin misiniz?",
+},
+en:{
+ auth_sub:"Sign In",label_nickname:"NICKNAME",label_email:"GMAIL ADDRESS",email_note:"* Only 1 account per Gmail address.",label_password:"PASSWORD",
+ btn_create_account:"Create Account",btn_login:"Log In",btn_resend_confirmation:"Resend Confirmation Email",toggle_have_account:"Already have an account?",toggle_login_link:"Log in",toggle_no_account:"Don't have an account?",toggle_signup_link:"Sign up",
+ err_gmail_only:"Only @gmail.com email addresses are accepted.",err_gmail_plus_limit:"At most 2 accounts per email: name@gmail.com or name+2@gmail.com",err_nickname_short:"Nickname must be at least 3 characters.",
+ signup_pending_msg:"Account created. Log in after clicking the confirmation link sent to your email.",err_email_unconfirmed:"This email has not been confirmed yet.",switch_to_other_lang:"Türkçe",
+ nav_ana_sayfa:"Home",nav_destek:"Support",nav_admin:"Admin Panel",nav_arkadaslar:"Friends",nav_yayinlar:"Game Releases",btn_logout:"Log Out",role_founder:"FOUNDER",role_admin:"ADMIN",
+ cat_oyun:"Games",cat_film:"Movies",cat_video:"Videos",cat_sohbet:"Discussions",cat_topluluk:"Community",
+ home_hero_title:"STRUD COMMUNITY PLATFORM",home_hero_desc:"Welcome to an independent sharing and discussion network.",
+ home_feat1_title:"Custom Categories",home_feat1_desc:"Showcase your posts in the right place with Games, Movies and Community.",
+ home_feat2_title:"Photo & Video",home_feat2_desc:"Add photos and videos (YouTube included) to your posts.",
+ home_feat3_title:"Advanced Sorting",home_feat3_desc:"Browse with Popular, Trending and New filters.",
+ home_feat4_title:"Game Releases",home_feat4_desc:"Download games published by the founder.",home_explore_btn:"Explore the Community",
+ stats_loading:"Gathering metrics...",stats_category_posts:"Category Posts",stats_image_count:"With Image",stats_video_count:"With Video",
+ new_post_heading:"Create New Post",label_post_title:"POST TITLE",post_title_placeholder:"Enter a title...",label_post_content:"CONTENT DETAILS",post_content_placeholder:"Enter description text...",
+ label_game_store_link:"GAME STORE PAGE URL (STEAM / EPIC ETC.)",game_link_placeholder:"game link URL",label_movie_review_link:"MOVIE REVIEW / IMDB LINK",movie_link_placeholder:"https://www.imdb.com/title/...",
+ label_image_url:"PHOTO URL (Optional)",btn_upload_pc:"📁 Choose from computer",upload_uploading:"Uploading...",upload_done:"Uploaded ✓",err_upload:"Upload failed: ",err_file_type:"Invalid file type.",err_file_too_big:"File is too large (max {n} MB).",
+ avatar_change_title:"Change profile picture",image_url_placeholder:"Photo link URL",label_video_url:"VIDEO URL (Optional)",video_url_placeholder:"Video link URL (YouTube included)",btn_publish_post:"Publish Post",
+ search_placeholder:"Search by keyword or author...",filter_all:"All",filter_images:"Images",filter_videos:"Videos",sort_new:"New",sort_popular:"Popular",sort_trend:"Trending",
+ db_scanning:"Loading...",empty_no_data:"No records match the criteria.",store_link_btn:"🛒 Go to Store Page",review_link_btn:"🎬 Review / IMDb",
+ favorite_btn:"Favorite",report_btn:"🚩 Report",delete_btn:"Delete",edit_btn:"Edit",save_btn:"Save",cancel_btn:"Cancel",confirm_delete_post:"Are you sure you want to delete this?",
+ report_prompt:"Reason for report?",report_success:"Report submitted.",err_action_failed:"Action failed: ",
+ friends_heading:"Friends",friends_search_heading:"Search Users",friend_search_placeholder:"Search by nickname...",btn_search:"Search",incoming_requests_heading:"Incoming Requests",btn_accept:"Accept",btn_reject:"Reject",
+ no_pending_requests:"No pending requests.",outgoing_requests_heading:"Sent Requests",status_pending:"pending",no_sent_requests:"No sent requests.",my_friends_heading:"My Friends",no_friends_yet:"You don't have any friends yet.",
+ btn_chat:"💬 Chat",no_results_found:"No results found.",btn_send_request:"Send Request",btn_sent:"Sent",err_request_failed:"Failed to send request: ",
+ user_not_found:"User not found.",chat_input_placeholder:"Type a message...",btn_send:"Send",no_messages_yet:"No messages yet, be the first to write one.",edited_tag:"edited",err_message_edit_failed:"Failed to edit message: ",err_message_send_failed:"Failed to send message: ",confirm_delete_message:"Delete this message?",
+ destek_heading:"Support",destek_desc:"Contact management for rule violations, faulty content, or technical issues.",label_subject:"SUBJECT",subject_placeholder:"E.g: Rule violation, broken page...",label_detail:"DETAILED DESCRIPTION",detail_placeholder:"Describe the situation in detail...",
+ btn_send_support:"Send Support Request",err_support_failed:"Failed to submit support request: ",support_success:"Your support request has been sent. Thank you.",
+ admin_heading:"Management Control Panel",admin_sync:"Loading data...",mod_applications_heading:"Moderator Applications",no_applications:"No applications.",system_logs_heading:"System Logs & Notifications",inbox_clean:"Inbox is clean.",
+ admin_note:"Yellow rows are notifications from admins.",admin_tag:"ADMIN",role_sufficient:"Your current role is sufficient.",request_status:"Request Status:",application_form_heading:"Authorization Request Form",label_application_reason:"APPLICATION REASON AND EXPERIENCE",application_placeholder:"Enter details here...",
+ btn_submit_form:"Submit Form",contact_management_heading:"Send Message to Management",label_message_detail:"MESSAGE DETAILS",message_placeholder:"Write your message...",btn_send_message:"Send Message",msg_sent_to_management:"Message sent to management.",
+ status_kabul:"accepted",status_red:"rejected",status_beklemede:"pending",setup_complete_btn:"Complete Setup",err_nickname_taken:"This nickname is already registered.",
+ footer_text:"© 2026 STRUD WEB — All Rights Reserved. | SS",capacity_full_title:"Capacity full.",capacity_full_desc:"Please try again later.",btn_retry:"Try Again",
+ label_image_url_2:"EXTRA PHOTO URL 2 (Optional)",label_image_url_3:"EXTRA PHOTO URL 3 (Optional)",label_hashtags:"HASHTAGS (comma separated)",hashtags_placeholder:"gaming, events",label_rating:"YOUR RATING (Optional)",rating_none:"No rating",
+ label_is_spoiler:"This post contains spoilers",btn_reveal_spoiler:"⚠️ Contains Spoilers — Click to Reveal",spoiler_tag:"SPOILER",btn_load_more:"Load More",loading_more:"Loading...",
+ nav_bildirimler:"Notifications",notif_empty:"You have no notifications yet.",notif_new_message:"New message",btn_mark_all_read:"Mark All as Read",
+ games_heading:"Game Releases",games_empty:"No games published yet.",games_publish_heading:"Publish New Game (Founder Only)",label_game_title:"GAME TITLE",label_game_desc:"DESCRIPTION / RELEASE NOTES",label_game_cover:"COVER IMAGE URL (Optional)",
+ drop_hint:"Drag & drop game files here or click to choose (zip, exe, apk, etc.)",btn_publish_game:"Publish Game",btn_download:"⬇ Download",err_need_files:"Add at least one game file.",game_published:"Game published ✓",confirm_delete_game:"Delete this game and its files?",
+}};
+const t = k => (I18N[currentLang] && I18N[currentLang][k]) || k;
+function setLang(l){ currentLang = l; localStorage.setItem('strud_lang', l); document.documentElement.lang = l; render(); }
+const langToggleHtml = id => `<div style="text-align:center;margin-top:14px"><span class="edit-msg-btn" id="${id}">${t('switch_to_other_lang')}</span></div>`;
+const attachLangToggle = id => { const el = document.getElementById(id); if(el) el.onclick = () => setLang(currentLang === 'tr' ? 'en' : 'tr'); };
+
+/* ================= DURUM ================= */
+const CATEGORY_KEYS = ['oyun','film','video','sohbet','topluluk'];
+const catLabel = k => t('cat_' + k);
+let currentUser = null, currentProfile = null, allFetchedPosts = [], notifications = [];
+let dmChannel = null, activeChatFriendId = null, feedChannel = null, adminChannel = null, friendReqChannel = null, globalMsgChannel = null, heartbeatInterval = null;
+const FEED_PAGE_SIZE = 20;
+let feedHasMore = true, feedLoadingMore = false, capacityFull = false;
+let currentMediaTypeFilter = 'all', currentSortMode = 'yeni', currentSearchQuery = '';
+let authMode = 'login', authError = '', unconfirmedEmail = '';
+let pendingGameFiles = [];
+
+const navlinksEl = document.getElementById('navlinks');
+const authbarEl = document.getElementById('authbar');
+const mainEl = document.getElementById('main-content');
+
+const escapeHtml = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const safeUrl = u => /^https?:\/\//i.test(u || '') ? escapeHtml(u) : '#';
+const fmtSize = b => b > 1073741824 ? (b/1073741824).toFixed(2)+' GB' : b > 1048576 ? (b/1048576).toFixed(1)+' MB' : Math.max(1,Math.round(b/1024))+' KB';
+function extractYouTubeId(url){ const m = (url||'').match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/); return (m && m[2].length === 11) ? m[2] : null; }
+function timeAgo(s){
+  const d = new Date(s), diff = Math.floor((Date.now() - d.getTime())/1000), en = currentLang === 'en';
+  if(diff < 60) return en ? 'just now' : 'az önce';
+  if(diff < 3600) return Math.floor(diff/60) + (en ? ' min ago' : ' dk önce');
+  if(diff < 86400) return Math.floor(diff/3600) + (en ? ' hr ago' : ' sa önce');
+  return d.toLocaleDateString(en ? 'en-US' : 'tr-TR');
+}
+const currentRoute = () => window.location.hash.replace('#','').replace('/','') || 'ana-sayfa';
+
+/* Kurucu: SADECE doğrulanmış oturum e-postası. Veritabanı tarafında da aynı kontrol RLS ile yapılır (supabase.sql). */
+const FOUNDER_EMAIL = 'keremberber3761@gmail.com';
+const isFounder = () => !!(currentUser && currentUser.email && currentUser.email.trim().toLowerCase() === FOUNDER_EMAIL);
+const isAdminOrFounder = () => isFounder() || (currentProfile && currentProfile.role === 'admin');
+
+/* ================= TASLAKLAR ================= */
+let drafts = {};
+try{ drafts = JSON.parse(sessionStorage.getItem('strud_drafts') || '{}'); }catch(e){}
+const saveDrafts = () => { try{ sessionStorage.setItem('strud_drafts', JSON.stringify(drafts)); }catch(e){} };
+function setDraft(k, v){
+  if(v == null || v === '' || (typeof v === 'object' && !Object.values(v).some(x => x && x !== false))) delete drafts[k]; else drafts[k] = v;
+  saveDrafts();
+}
+const POST_DRAFT_FIELDS = ['np-title','np-content','np-special-link','np-image-url','np-video-url','np-image-url-2','np-image-url-3','np-hashtags','np-rating'];
+function restorePostDraft(cat){
+  const d = drafts['post:' + cat]; if(!d) return;
+  POST_DRAFT_FIELDS.forEach(id => { const el = document.getElementById(id); if(el && d[id] != null) el.value = d[id]; });
+  const sp = document.getElementById('np-spoiler'); if(sp && d['np-spoiler']) sp.checked = true;
+  const c = document.getElementById('charCounter'), ta = document.getElementById('np-content');
+  if(c && ta) c.textContent = `${ta.value.length} / 4000`;
+}
+function watchPostDraft(cat, form){
+  const save = () => {
+    const d = {}; POST_DRAFT_FIELDS.forEach(id => { const el = document.getElementById(id); if(el) d[id] = el.value; });
+    const sp = document.getElementById('np-spoiler'); if(sp) d['np-spoiler'] = sp.checked;
+    setDraft('post:' + cat, d);
+  };
+  form.addEventListener('input', save); form.addEventListener('change', save);
+}
+
+/* ================= MEDYA ================= */
+function releaseMedia(root){
+  if(!root) return;
+  root.querySelectorAll('video').forEach(v => { try{ v.pause(); v.removeAttribute('src'); v.load(); }catch(e){} });
+  root.querySelectorAll('iframe').forEach(f => { f.src = 'about:blank'; });
+}
+document.addEventListener('play', e => {
+  if(e.target && e.target.tagName === 'VIDEO') document.querySelectorAll('video').forEach(v => { if(v !== e.target) v.pause(); });
+}, true);
+document.addEventListener('click', e => {
+  const f = e.target.closest && e.target.closest('.yt-facade'); if(!f) return;
+  f.parentElement.innerHTML = `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(f.dataset.yt)}?autoplay=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+});
+
+/* ================= YÜKLEME (Storage) ================= */
+const MAX_IMAGE_MB = 500, MAX_VIDEO_MB = 1024, MAX_AVATAR_MB = 10, MAX_GAME_MB = 4096;
+const VIDEO_PART_MB = 45, RESUMABLE_THRESHOLD = 6 * 1024 * 1024;
+const GAME_CHUNK_MB = 32, GAME_CHUNK_BYTES = GAME_CHUNK_MB * 1024 * 1024;
+let ffmpegInstance = null, ffmpegWorkerBlobUrl = null;
+
+function getVideoParts(v){
+  if(!v) return [];
+  try{ const p = JSON.parse(v); if(p && p.__strudVideoParts === 1 && Array.isArray(p.parts)) return p.parts; }catch(e){}
+  return [v];
+}
+const isVideoPartsManifest = v => { try{ const p = JSON.parse(v); return !!(p && p.__strudVideoParts === 1 && Array.isArray(p.parts)); }catch(e){ return false; } };
+
+const DOWNLOADER_URL = SUPABASE_URL + '/storage/v1/object/public/downloader/STRUD-Downloader.exe';
+const toHex = buf => [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
+const toB64 = u8 => { let s = ''; for(let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(s); };
+
+// Oyun ZIP'ini tarayıcıda parçalara böler, AES-256-GCM ile şifreler, private 'games' bucket'ına yükler.
+// Parça biçimi: [12 bayt iv][şifreli veri + 16 bayt etiket], AAD = parça numarası (0'dan).
+async function encryptGameChunks(file, folder, onProgress){
+  const raw = crypto.getRandomValues(new Uint8Array(32));
+  const key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt']);
+  const count = Math.ceil(file.size / GAME_CHUNK_BYTES), chunks = [], paths = [];
+  try{
+    for(let i = 0; i < count; i++){
+      const plain = await file.slice(i * GAME_CHUNK_BYTES, Math.min((i + 1) * GAME_CHUNK_BYTES, file.size)).arrayBuffer();
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: new TextEncoder().encode(String(i)) }, key, plain));
+      const blob = new Uint8Array(12 + ct.length); blob.set(iv, 0); blob.set(ct, 12);
+      const path = `${folder}/${String(i).padStart(4, '0')}.bin`;
+      await putFile('games', path, new Blob([blob], { type: 'application/octet-stream' }), p => onProgress(i, count, p));
+      paths.push(path);
+      chunks.push({ i, path, size: blob.length, plainSize: plain.byteLength, sha256: toHex(await crypto.subtle.digest('SHA-256', blob)) });
+    }
+  }catch(err){
+    if(paths.length) await supabase.storage.from('games').remove(paths);
+    throw err;
+  }
+  return { key: toB64(raw), chunks, paths };
+}
+
+async function downloadMergedVideo(urls, fileName, button){
+  const old = button.textContent; button.disabled = true;
+  try{
+    const { ffmpeg, fetchFile } = await loadFfmpeg();
+    const names = [];
+    for(let i = 0; i < urls.length; i++){
+      button.textContent = `Video hazırlanıyor ${i + 1}/${urls.length}...`;
+      const r = await fetch(urls[i]); if(!r.ok) throw new Error(`Video parçası ${i + 1} indirilemedi`);
+      const name = `merge-part-${String(i).padStart(4,'0')}.mp4`;
+      await ffmpeg.writeFile(name, await fetchFile(await r.blob())); names.push(name);
+    }
+    const list = names.map(n => `file '${n}'`).join('\n');
+    await ffmpeg.writeFile('merge-list.txt', new TextEncoder().encode(list));
+    await ffmpeg.exec(['-f','concat','-safe','0','-i','merge-list.txt','-c','copy','merged-video.mp4']);
+    const out = await ffmpeg.readFile('merged-video.mp4');
+    const blob = new Blob([out.buffer], { type: 'video/mp4' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    for(const n of [...names, 'merge-list.txt', 'merged-video.mp4']){ try{ await ffmpeg.deleteFile(n); }catch(e){} }
+  }catch(err){ alert('Video birleştirilemedi: ' + (err.message || err)); }
+  finally{ button.disabled = false; button.textContent = old; }
+}
+
+async function uploadResumable(bucket, path, file, onProgress){
+  if(!window.tus){
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/tus-js-client@4.1.0/dist/tus.min.js';
+      s.onload = res; s.onerror = () => rej(new Error('Yükleme kütüphanesi indirilemedi'));
+      document.head.appendChild(s);
+    });
+  }
+  const { data: { session } } = await supabase.auth.getSession();
+  if(!session) throw new Error('Oturum bulunamadı');
+  const ref = new URL(SUPABASE_URL).hostname.split('.')[0];
+  await new Promise((resolve, reject) => {
+    const up = new window.tus.Upload(file, {
+      endpoint: `https://${ref}.storage.supabase.co/storage/v1/upload/resumable`,
+      retryDelays: [0,3000,5000,10000,20000],
+      headers: { authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY, 'x-upsert': 'false' },
+      uploadDataDuringCreation: true, removeFingerprintOnSuccess: true,
+      metadata: { bucketName: bucket, objectName: path, contentType: file.type || 'application/octet-stream', cacheControl: '31536000' },
+      chunkSize: 6 * 1024 * 1024,
+      onError: reject,
+      onProgress: (s, tot) => onProgress && onProgress(Math.floor(s / tot * 100)),
+      onSuccess: resolve,
+    });
+    up.findPreviousUploads().then(p => { if(p.length) up.resumeFromPreviousUpload(p[0]); up.start(); }).catch(() => up.start());
+  });
+}
+
+async function putFile(bucket, path, file, onProgress){
+  if(file.size > RESUMABLE_THRESHOLD) await uploadResumable(bucket, path, file, onProgress);
+  else {
+    const { error } = await supabase.storage.from(bucket).upload(path, file, { cacheControl: '31536000', upsert: false, contentType: file.type || 'application/octet-stream' });
+    if(error) throw error;
+    onProgress && onProgress(100);
+  }
+  return supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+}
+
+async function loadFfmpeg(){
+  if(ffmpegInstance) return ffmpegInstance;
+  const [{ FFmpeg }, { fetchFile, toBlobURL }] = await Promise.all([
+    import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js'),
+    import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js')
+  ]);
+  const ffmpeg = new FFmpeg(), base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
+  if(!ffmpegWorkerBlobUrl){
+    const r = await fetch('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/814.ffmpeg.js', { mode: 'cors' });
+    if(!r.ok) throw new Error('FFmpeg Worker indirilemedi.');
+    ffmpegWorkerBlobUrl = URL.createObjectURL(new Blob([await r.text()], { type: 'text/javascript' }));
+  }
+  await ffmpeg.load({
+    classWorkerURL: ffmpegWorkerBlobUrl,
+    coreURL: await toBlobURL(`${base}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm')
+  });
+  return (ffmpegInstance = { ffmpeg, fetchFile });
+}
+
+async function uploadVideoParts(bucket, file, onProgress){
+  const { ffmpeg, fetchFile } = await loadFfmpeg();
+  const input = `input-${Date.now()}.mp4`;
+  await ffmpeg.writeFile(input, await fetchFile(file));
+  await ffmpeg.exec(['-i', input, '-c:v','libx264','-preset','veryfast','-crf','28','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k',
+    '-force_key_frames','expr:gte(t,n_forced*60)','-f','segment','-segment_time','60','-reset_timestamps','1','-movflags','+faststart','strud-part-%03d.mp4']);
+  const names = (await ffmpeg.listDir('.')).map(x => x.name).filter(n => /^strud-part-\d+\.mp4$/.test(n)).sort();
+  if(!names.length) throw new Error('Video segmentlere ayrıştırılamadı.');
+  const urls = [];
+  for(let i = 0; i < names.length; i++){
+    const part = new File([await ffmpeg.readFile(names[i])], names[i], { type: 'video/mp4' });
+    const path = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-part-${String(i+1).padStart(3,'0')}.mp4`;
+    urls.push(await putFile(bucket, path, part, pct => onProgress && onProgress(Math.floor(((i + pct/100) / names.length) * 100))));
+    await ffmpeg.deleteFile(names[i]);
+  }
+  await ffmpeg.deleteFile(input);
+  return JSON.stringify({ __strudVideoParts: 1, parts: urls });
+}
+
+const getVideoFieldValue = input => input ? (input.dataset.videoParts || input.value.trim()) : '';
+
+async function uploadToStorage(bucket, file, kind, onProgress, maxMBOverride){
+  const isImage = file.type.startsWith('image/'), isVideo = file.type.startsWith('video/');
+  if((kind === 'image' && !isImage) || (kind === 'video' && !isVideo)) throw new Error(t('err_file_type'));
+  const maxMB = maxMBOverride || (kind === 'video' ? MAX_VIDEO_MB : MAX_IMAGE_MB);
+  if(file.size > maxMB * 1024 * 1024) throw new Error(t('err_file_too_big').replace('{n}', maxMB));
+  if(isVideo && file.size > VIDEO_PART_MB * 1024 * 1024) return uploadVideoParts(bucket, file, onProgress);
+  const ext = (file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg')).toLowerCase().replace(/[^a-z0-9]/g, '');
+  return putFile(bucket, `${currentUser.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`, file, onProgress);
+}
+
+function enhanceUploadFields(root){
+  root.querySelectorAll('input[data-upload]').forEach(input => {
+    if(input.dataset.uploadReady) return;
+    input.dataset.uploadReady = '1';
+    const kind = input.dataset.upload;
+    if(kind === 'video' && isVideoPartsManifest(input.value)){ input.dataset.videoParts = input.value; input.value = getVideoParts(input.value)[0] || ''; }
+    input.addEventListener('input', () => { if(kind === 'video') delete input.dataset.videoParts; });
+    const row = document.createElement('div');
+    row.className = 'upload-row';
+    row.innerHTML = `<button type="button" class="btn ghost small">${t('btn_upload_pc')}</button><span class="upload-status"></span>`;
+    const btn = row.querySelector('button'), status = row.querySelector('.upload-status');
+    const picker = document.createElement('input');
+    picker.type = 'file'; picker.accept = kind === 'video' ? 'video/*' : 'image/*'; picker.style.display = 'none';
+    btn.onclick = () => picker.click();
+    picker.onchange = async () => {
+      const file = picker.files && picker.files[0]; if(!file) return;
+      status.className = 'upload-status'; status.textContent = t('upload_uploading'); btn.disabled = true;
+      const form = input.closest('form'), submitBtn = form && form.querySelector('button[type="submit"]');
+      if(submitBtn) submitBtn.disabled = true;
+      try{
+        const url = await uploadToStorage('post-media', file, kind, p => { status.textContent = t('upload_uploading') + ' %' + p; });
+        if(kind === 'video' && isVideoPartsManifest(url)){ input.dataset.videoParts = url; input.value = getVideoParts(url)[0] || ''; }
+        else { delete input.dataset.videoParts; input.value = url; }
+        status.textContent = t('upload_done');
+      }catch(err){
+        status.className = 'upload-status err';
+        status.textContent = t('err_upload') + (err.message || '');
+      }finally{
+        btn.disabled = false; if(submitBtn) submitBtn.disabled = false; picker.value = '';
+      }
+    };
+    row.appendChild(picker);
+    input.insertAdjacentElement('afterend', row);
+  });
+}
+
+function avatarHtml(p, cls){
+  const c = cls ? 'avatar ' + cls : 'avatar';
+  if(p && p.avatar_url) return `<img class="${c}" src="${escapeHtml(p.avatar_url)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`;
+  return `<span class="${c}">${escapeHtml(((p && p.nickname) || '?').trim().charAt(0))}</span>`;
+}
+async function changeAvatar(file){
+  try{
+    const url = await uploadToStorage('avatars', file, 'image', null, MAX_AVATAR_MB);
+    const { error } = await supabase.from('profiles').update({ avatar_url: url }).eq('id', currentUser.id);
+    if(error) throw error;
+    currentProfile.avatar_url = url; renderNav();
+  }catch(err){ alert(t('err_upload') + (err.message || '')); }
+}
+
+/* ================= AUTH ================= */
+async function loadProfile(id){
+  const { data, error } = await supabase.from('profiles').select('id, nickname, role, avatar_url').eq('id', id).maybeSingle();
+  if(error){ console.error(error); return null; }
+  return data;
+}
+async function refreshSession(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(session){
+    currentUser = session.user;
+    currentProfile = await loadProfile(currentUser.id);
+    if(!currentProfile){
+      const pending = localStorage.getItem('strud_pending_nickname');
+      if(pending){
+        const { error } = await supabase.from('profiles').insert({ id: currentUser.id, nickname: pending });
+        localStorage.removeItem('strud_pending_nickname');
+        if(!error) currentProfile = await loadProfile(currentUser.id);
+      }
+    }
+    await requestActiveSlot();
+    startHeartbeat();
+    notifications = await fetchNotificationsFromDB();
+    updateTabTitleBadge();
+    if('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+    startGlobalMessageListener();
+    startFriendRequestListener();
+  } else {
+    currentUser = currentProfile = null; capacityFull = false; notifications = [];
+    stopHeartbeat(); stopGlobalMessageListener(); stopFriendRequestListener(); stopFeedRealtime(); stopAdminRealtime();
+    updateTabTitleBadge();
+  }
+  render();
+}
+
+/* ================= BİLDİRİMLER ================= */
+function playNotificationSound(){
+  try{
+    const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination); o.frequency.value = 880;
+    g.gain.setValueAtTime(.15, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + .25);
+    o.start(); o.stop(c.currentTime + .25); setTimeout(() => c.close(), 400);
+  }catch(e){}
+}
+async function fetchNotificationsFromDB(){
+  const { data, error } = await supabase.from('notifications')
+    .select('id, sender_id, content, created_at, profiles!notifications_sender_id_fkey(nickname)')
+    .eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  if(error){ console.error(error); return []; }
+  return (data || []).map(n => ({ id: n.id, senderId: n.sender_id, nickname: n.profiles?.nickname || '?', content: n.content, created_at: n.created_at }));
+}
+function startGlobalMessageListener(){
+  stopGlobalMessageListener();
+  globalMsgChannel = supabase.channel('inbox-' + currentUser.id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${currentUser.id}` }, async payload => {
+      const row = payload.new;
+      if(currentRoute() === 'dm/' + row.sender_id){ await supabase.from('notifications').delete().eq('id', row.id); return; }
+      const { data: sp } = await supabase.from('profiles').select('nickname').eq('id', row.sender_id).maybeSingle();
+      const nickname = sp?.nickname || '?';
+      notifications.unshift({ id: row.id, senderId: row.sender_id, nickname, content: row.content, created_at: row.created_at });
+      playNotificationSound(); renderNav(); updateTabTitleBadge();
+      if('Notification' in window && Notification.permission === 'granted' && document.visibilityState !== 'visible'){
+        try{ const n = new Notification(nickname, { body: row.content, icon: LOGO }); n.onclick = () => window.focus(); }catch(e){}
+      }
+      if(currentRoute() === 'bildirimler') renderNotifications();
+    }).subscribe();
+}
+function stopGlobalMessageListener(){ if(globalMsgChannel){ supabase.removeChannel(globalMsgChannel); globalMsgChannel = null; } }
+
+function startAdminRealtime(){
+  stopAdminRealtime();
+  const re = () => { if(currentRoute() === 'admin') renderAdmin(); };
+  adminChannel = supabase.channel('admin-' + currentUser.id)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'admin_applications' }, re)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'founder_messages' }, re)
+    .subscribe();
+}
+function stopAdminRealtime(){ if(adminChannel){ supabase.removeChannel(adminChannel); adminChannel = null; } }
+
+function startFriendRequestListener(){
+  stopFriendRequestListener();
+  const re = () => { if(currentRoute() === 'arkadaslar') renderFriends(); };
+  friendReqChannel = supabase.channel('friendreq-' + currentUser.id)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'friend_requests', filter: `receiver_id=eq.${currentUser.id}` }, re)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'friend_requests', filter: `sender_id=eq.${currentUser.id}` }, re)
+    .subscribe();
+}
+function stopFriendRequestListener(){ if(friendReqChannel){ supabase.removeChannel(friendReqChannel); friendReqChannel = null; } }
+
+let baseTabTitle = '';
+function updateTabTitleBadge(){
+  baseTabTitle = currentLang === 'en' ? 'Strud WEB — Community Platform' : 'Strud WEB — Topluluk Platformu';
+  document.title = notifications.length ? `(${notifications.length}) ${baseTabTitle}` : baseTabTitle;
+}
+
+/* ================= KAPASİTE ================= */
+async function requestActiveSlot(){
+  try{ const { data, error } = await supabase.rpc('request_active_slot'); if(!error) capacityFull = (data === 'full'); }catch(e){}
+}
+async function releaseActiveSlot(){ try{ await supabase.rpc('release_active_slot'); }catch(e){} }
+function startHeartbeat(){
+  stopHeartbeat();
+  heartbeatInterval = setInterval(async () => { if(!currentUser) return; await requestActiveSlot(); if(capacityFull) render(); }, 45000);
+}
+function stopHeartbeat(){ if(heartbeatInterval){ clearInterval(heartbeatInterval); heartbeatInterval = null; } }
+
+function renderCapacityFullScreen(){
+  navlinksEl.innerHTML = ''; authbarEl.innerHTML = '';
+  mainEl.innerHTML = `<div class="auth-wrap"><img src="${LOGO}" alt="" class="auth-logo"><h1>STRUD WEB</h1>
+    <div class="auth-sub" style="line-height:1.6">${t('capacity_full_title')}<br><span style="font-size:12.5px">${t('capacity_full_desc')}</span></div>
+    <button class="btn" id="capRetry" style="width:100%">${t('btn_retry')}</button></div>`;
+  document.getElementById('capRetry').onclick = async () => { await requestActiveSlot(); render(); };
+}
+
+function renderLanguageGate(){
+  mainEl.innerHTML = `<div class="auth-wrap"><img src="${LOGO}" alt="" class="auth-logo"><h1>STRUD WEB</h1>
+    <div class="auth-sub">Dilinizi seçin / Select your language</div>
+    <div style="display:flex;gap:10px"><button class="btn" id="lTr" style="flex:1">Türkçe</button><button class="btn" id="lEn" style="flex:1">English</button></div></div>`;
+  document.getElementById('lTr').onclick = () => setLang('tr');
+  document.getElementById('lEn').onclick = () => setLang('en');
+}
+
+function renderAuthScreen(){
+  mainEl.innerHTML = `<div class="auth-wrap"><img src="${LOGO}" alt="" class="auth-logo"><h1>STRUD WEB</h1><div class="auth-sub">${t('auth_sub')}</div>
+    <form id="authForm">
+      ${authMode === 'signup' ? `<div class="field"><label>${t('label_nickname')}</label><input type="text" id="f-nickname" required maxlength="24"></div>` : ''}
+      <div class="field"><label>${t('label_email')}</label><input type="email" id="f-email" placeholder="ornek@gmail.com" required>
+        <div style="font-size:10px;color:var(--sick);margin-top:6px;font-family:'IBM Plex Mono',monospace">${t('email_note')}</div></div>
+      <div class="field"><label>${t('label_password')}</label><input type="password" id="f-password" required minlength="6"></div>
+      <button type="submit" class="btn" style="width:100%">${authMode === 'signup' ? t('btn_create_account') : t('btn_login')}</button>
+      ${authError ? `<div class="error-msg">${escapeHtml(authError)}</div>` : ''}
+      ${unconfirmedEmail ? `<button type="button" id="resendBtn" class="btn ghost" style="width:100%;margin-top:8px">${t('btn_resend_confirmation')}</button>` : ''}
+    </form>
+    <div class="auth-toggle">${authMode === 'signup' ? `${t('toggle_have_account')} <span id="toggleAuth">${t('toggle_login_link')}</span>` : `${t('toggle_no_account')} <span id="toggleAuth">${t('toggle_signup_link')}</span>`}</div>
+    ${langToggleHtml('authLang')}</div>`;
+  document.getElementById('toggleAuth').onclick = () => { authMode = authMode === 'signup' ? 'login' : 'signup'; authError = unconfirmedEmail = ''; renderAuthScreen(); };
+  attachLangToggle('authLang');
+  const rb = document.getElementById('resendBtn');
+  if(rb) rb.onclick = async () => { await supabase.auth.resend({ type: 'signup', email: unconfirmedEmail }); rb.disabled = true; };
+
+  document.getElementById('authForm').onsubmit = async e => {
+    e.preventDefault(); authError = unconfirmedEmail = '';
+    const email = document.getElementById('f-email').value.trim(), password = document.getElementById('f-password').value;
+    if(!email.toLowerCase().endsWith('@gmail.com')){ authError = t('err_gmail_only'); return renderAuthScreen(); }
+    if(authMode === 'signup'){
+      if(!/^[^+]+(\+2)?$/.test(email.slice(0, email.toLowerCase().lastIndexOf('@gmail.com')))){ authError = t('err_gmail_plus_limit'); return renderAuthScreen(); }
+      const nickname = document.getElementById('f-nickname').value.trim();
+      if(nickname.length < 3){ authError = t('err_nickname_short'); return renderAuthScreen(); }
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if(error){ authError = error.message; return renderAuthScreen(); }
+      if(!data.session){
+        localStorage.setItem('strud_pending_nickname', nickname);
+        mainEl.innerHTML = `<div class="auth-wrap"><img src="${LOGO}" alt="" class="auth-logo"><h1>STRUD WEB</h1><div class="info-msg" style="text-align:center">${t('signup_pending_msg')}</div></div>`;
+        return;
+      }
+      await supabase.from('profiles').insert({ id: data.user?.id, nickname });
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if(error){
+        if(error.message.toLowerCase().includes('confirm')){ authError = t('err_email_unconfirmed'); unconfirmedEmail = email; } else authError = error.message;
+        return renderAuthScreen();
+      }
+    }
+    await refreshSession();
+    window.location.hash = '#/ana-sayfa';
+  };
+}
+
+/* ================= NAV ================= */
+function renderNav(){
+  if(!currentUser){ navlinksEl.innerHTML = authbarEl.innerHTML = ''; return; }
+  const route = currentRoute();
+  const items = [['ana-sayfa', t('nav_ana_sayfa')], ...CATEGORY_KEYS.map(k => [k, catLabel(k)]),
+    ['yayinlar', t('nav_yayinlar')], ['arkadaslar', t('nav_arkadaslar')],
+    ['bildirimler', t('nav_bildirimler') + (notifications.length ? ` (${notifications.length})` : '')],
+    ['destek', t('nav_destek')], ['admin', t('nav_admin')]];
+  navlinksEl.innerHTML = items.map(([k, l]) => `<div class="navlink ${route === k ? 'active' : ''}" data-route="${k}">${l}</div>`).join('');
+  navlinksEl.querySelectorAll('.navlink').forEach(el => el.onclick = () => { window.location.hash = '#/' + el.dataset.route; });
+
+  const badge = isFounder() ? `<span class="pill founder">${t('role_founder')}</span>` : currentProfile?.role === 'admin' ? `<span class="pill admin">${t('role_admin')}</span>` : '';
+  authbarEl.innerHTML = `<span class="pill me" id="navMe" title="${t('avatar_change_title')}">${avatarHtml(currentProfile, 'lg')}${escapeHtml(currentProfile?.nickname || '...')}</span>
+    <input type="file" id="avatarPicker" accept="image/*" style="display:none">${badge}
+    <span class="pill clickable" id="navLang">${currentLang === 'tr' ? 'EN' : 'TR'}</span>
+    <button class="btn ghost small" id="logoutBtn">${t('btn_logout')}</button>`;
+  document.getElementById('logoutBtn').onclick = async () => {
+    await releaseActiveSlot(); stopHeartbeat(); stopGlobalMessageListener(); stopFriendRequestListener(); stopFeedRealtime(); stopAdminRealtime();
+    notifications = []; drafts = {}; saveDrafts();
+    await supabase.auth.signOut(); await refreshSession(); window.location.hash = '';
+  };
+  const ap = document.getElementById('avatarPicker');
+  document.getElementById('navMe').onclick = () => ap.click();
+  ap.onchange = async () => { if(ap.files[0]) await changeAvatar(ap.files[0]); ap.value = ''; };
+  document.getElementById('navLang').onclick = () => setLang(currentLang === 'tr' ? 'en' : 'tr');
+}
+
+function renderHome(){
+  mainEl.innerHTML = `<div class="hero-section"><h1>${t('home_hero_title')}</h1><p>${t('home_hero_desc')}</p></div>
+    <div class="features-grid">${[1,2,3,4].map(i => `<div class="feature-box"><h3>${t('home_feat'+i+'_title')}</h3><p>${t('home_feat'+i+'_desc')}</p></div>`).join('')}</div>
+    <div style="text-align:center"><button class="btn" style="padding:12px 28px" onclick="location.hash='#/topluluk'">${t('home_explore_btn')}</button></div>`;
+}
+
+/* ================= OYUN YAYINLARI (Sadece kurucu yayınlar) ================= */
+function renderPendingFiles(){
+  const el = document.getElementById('pendingFiles'); if(!el) return;
+  el.innerHTML = pendingGameFiles.map((f, i) => `<div class="file-chip"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(f.name)} · ${fmtSize(f.size)}</span><span class="edit-msg-btn" data-rm="${i}">✕</span></div>`).join('');
+  el.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { pendingGameFiles.splice(+b.dataset.rm, 1); renderPendingFiles(); });
+}
+
+async function renderGames(){
+  pendingGameFiles = [];
+  const founder = isFounder();
+  mainEl.innerHTML = `<div class="feed-header"><h2>${t('games_heading')}</h2></div>
+    ${founder ? `<div class="new-post-box"><h3>${t('games_publish_heading')}</h3>
+      <form id="gameForm">
+        <div class="field"><label>${t('label_game_title')}</label><input type="text" id="g-title" maxlength="120" required></div>
+        <div class="field"><label>${t('label_game_desc')}</label><textarea id="g-desc" maxlength="4000"></textarea></div>
+        <div class="field"><label>ÇALIŞTIRILACAK EXE (ZIP İÇİNDEKİ YOL, ÖR: AroundNature.exe)</label><input type="text" id="g-exe" maxlength="200" required></div>
+        <div class="field"><label>${t('label_game_cover')}</label><input type="url" id="g-cover" data-upload="image" placeholder="https://..."></div>
+        <div class="dropzone" id="dropzone">${t('drop_hint')}</div>
+        <input type="file" id="gamePicker" multiple style="display:none">
+        <div id="pendingFiles"></div>
+        <div class="progress hidden" id="gProgress"><i></i></div>
+        <div class="upload-status" id="gStatus"></div>
+        <button type="submit" class="btn" style="margin-top:10px">${t('btn_publish_game')}</button>
+      </form></div>` : ''}
+    <div id="gamesList">${t('db_scanning')}</div>`;
+
+  if(founder){
+    const dz = document.getElementById('dropzone'), picker = document.getElementById('gamePicker');
+    const add = files => {
+      const f = files[0]; if(!f) return;
+      if(f.size > MAX_GAME_MB * 1048576){ alert(t('err_file_too_big').replace('{n}', MAX_GAME_MB)); return; }
+      pendingGameFiles = [f];
+      renderPendingFiles();
+    };
+    dz.onclick = () => picker.click();
+    picker.onchange = () => { add([...picker.files]); picker.value = ''; };
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('over'); }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('over'); }));
+    dz.addEventListener('drop', e => add([...(e.dataTransfer.files || [])]));
+    enhanceUploadFields(document.getElementById('gameForm'));
+
+    document.getElementById('gameForm').onsubmit = async e => {
+      e.preventDefault();
+      if(!isFounder()) return;
+      const f = pendingGameFiles[0];
+      if(!f){ alert(t('err_need_files')); return; }
+      const btn = e.target.querySelector('button[type="submit"]'), bar = document.getElementById('gProgress'), barI = bar.firstElementChild, st = document.getElementById('gStatus');
+      btn.disabled = true; bar.classList.remove('hidden'); st.className = 'upload-status';
+      let up = null, gameId = null;
+      try{
+        up = await encryptGameChunks(f, `${currentUser.id}/${crypto.randomUUID()}`, (i, count, p) => {
+          st.textContent = `${t('upload_uploading')} ${f.name} — ${i + 1}/${count}`;
+          barI.style.width = Math.floor((i + p / 100) / count * 100) + '%';
+        });
+        const { data: g, error } = await supabase.from('games').insert({
+          title: document.getElementById('g-title').value.trim(),
+          description: document.getElementById('g-desc').value.trim(),
+          cover_url: document.getElementById('g-cover').value.trim() || null,
+          files: [{ name: f.name, size: f.size, secure: true }], author_id: currentUser.id
+        }).select('id').single();
+        if(error) throw error;
+        gameId = g.id;
+        const { error: e2 } = await supabase.from('game_secrets').insert({
+          game_id: String(gameId), key: up.key,
+          manifest: { exe: document.getElementById('g-exe').value.trim(), version: new Date().toISOString(), zipName: f.name, totalPlain: f.size, zipSha256: '', chunks: up.chunks }
+        });
+        if(e2) throw e2;
+        st.textContent = t('game_published');
+        renderGames();
+      }catch(err){
+        if(gameId !== null) await supabase.from('games').delete().eq('id', gameId);
+        if(up && up.paths.length) for(let i = 0; i < up.paths.length; i += 100) await supabase.storage.from('games').remove(up.paths.slice(i, i + 100));
+        st.className = 'upload-status err'; st.textContent = t('err_upload') + (err.message || '');
+        btn.disabled = false;
+      }
+    };
+  }
+  loadGames();
+}
+
+async function loadGames(){
+  const { data, error } = await supabase.from('games').select('id, title, description, cover_url, files, created_at').order('created_at', { ascending: false }).limit(50);
+  const el = document.getElementById('gamesList'); if(!el) return;
+  if(error){ el.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`; return; }
+  if(!data.length){ el.innerHTML = `<div class="empty-state">${t('games_empty')}</div>`; return; }
+  el.innerHTML = `<div class="post-card"><div class="post-title">STRUD Downloader</div>
+    <div class="post-content">Oyunları indirmek için programı indir, aç ve bu hesapla giriş yap. Dosyalar sadece programdan indirilir.</div>
+    <a class="btn small" href="${DOWNLOADER_URL}" download>⬇ STRUD Downloader'ı İndir (Windows)</a></div>` + data.map(g => `<div class="post-card" data-game-id="${g.id}">
+    ${g.cover_url ? `<img class="game-cover" src="${safeUrl(g.cover_url)}" loading="lazy" alt="" onerror="this.style.display='none'">` : ''}
+    <div class="post-meta"><span>${timeAgo(g.created_at)}</span></div>
+    <div class="post-title">${escapeHtml(g.title)}</div>
+    <div class="post-content">${escapeHtml(g.description || '')}</div>
+    ${(g.files || []).map(f => `<div class="file-chip"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(f.name)} · ${fmtSize(f.size)}${f.secure ? '' : ' · ESKİ YAYIN'}</span></div>`).join('')}
+    ${isFounder() ? `<div class="post-actions"><button class="react-btn" data-del-game="${g.id}" style="margin-left:auto;color:#e26f6f">${t('delete_btn')}</button></div>` : ''}
+  </div>`).join('');
+  el.querySelectorAll('[data-del-game]').forEach(b => b.onclick = async () => {
+    if(!confirm(t('confirm_delete_game'))) return;
+    const g = data.find(x => String(x.id) === b.dataset.delGame);
+    const { data: sec } = await supabase.from('game_secrets').select('manifest').eq('game_id', String(g.id)).maybeSingle();
+    const { error } = await supabase.from('games').delete().eq('id', g.id);
+    if(error){ alert(t('err_action_failed') + error.message); return; }
+    await supabase.from('game_secrets').delete().eq('game_id', String(g.id));
+    const paths = [...((sec && sec.manifest && sec.manifest.chunks) || []).map(c => c.path),
+      ...(g.files || []).flatMap(f => f.chunked && Array.isArray(f.chunks) ? f.chunks.map(c => c.path) : [f.path])].filter(Boolean);
+    if(paths.length) for(let i = 0; i < paths.length; i += 100) await supabase.storage.from('games').remove(paths.slice(i, i + 100));
+    loadGames();
+  });
+}
+
+/* ================= FEED ================= */
+async function fetchPostsPage(category, offset, limit){
+  const { data: posts, error } = await supabase.from('posts')
+    .select('id, category, title, content, image_url, image_url_2, image_url_3, video_url, tags, hashtags, is_spoiler, rating, author_id, created_at, profiles!posts_author_id_fkey(nickname, avatar_url)')
+    .eq('category', category).order('created_at', { ascending: false }).range(offset, offset + limit - 1);
+  if(error){ console.error(error); return []; }
+  const ids = posts.map(p => p.id); let reactions = [], favs = [];
+  if(ids.length){
+    const [r, f] = await Promise.all([
+      supabase.from('post_reactions').select('post_id, user_id, type').in('post_id', ids),
+      supabase.from('favorites').select('post_id').in('post_id', ids).eq('user_id', currentUser.id)
+    ]);
+    reactions = r.data || []; favs = f.data || [];
+  }
+  return posts.map(p => {
+    const pr = reactions.filter(r => r.post_id === p.id);
+    return { ...p, likeCount: pr.filter(r => r.type === 'like').length, dislikeCount: pr.filter(r => r.type === 'dislike').length,
+      myReaction: pr.find(r => r.user_id === currentUser.id)?.type || null, isFav: favs.some(f => f.post_id === p.id) };
+  });
+}
+
+function filterAndRenderPosts(category){
+  const listEl = document.getElementById('postList'); if(!listEl) return;
+  const q = currentSearchQuery;
+  let filtered = allFetchedPosts.filter(p => {
+    const ms = !q || p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q) || (p.profiles?.nickname || '').toLowerCase().includes(q) || (p.hashtags || []).some(h => h.toLowerCase().includes(q));
+    const mt = currentMediaTypeFilter === 'image' ? !!p.image_url : currentMediaTypeFilter === 'video' ? !!p.video_url : true;
+    return ms && mt;
+  });
+  filtered.sort((a, b) => currentSortMode === 'populer' ? b.likeCount - a.likeCount
+    : currentSortMode === 'trend' ? (b.likeCount + b.dislikeCount) - (a.likeCount + a.dislikeCount)
+    : new Date(b.created_at) - new Date(a.created_at));
+
+  document.getElementById('user-stats-area').innerHTML = `<span>${t('stats_category_posts')}: ${allFetchedPosts.length}</span><span>${t('stats_image_count')}: ${allFetchedPosts.filter(p => p.image_url).length}</span><span>${t('stats_video_count')}: ${allFetchedPosts.filter(p => p.video_url).length}</span>`;
+  listEl.innerHTML = filtered.length ? filtered.map(renderPostCard).join('') : `<div class="empty-state">${t('empty_no_data')}</div>`;
+  if(filtered.length) attachPostHandlers(category);
+
+  const lm = document.getElementById('loadMoreWrap');
+  if(lm){
+    lm.innerHTML = feedHasMore ? `<button class="btn ghost" id="loadMoreBtn" style="width:100%" ${feedLoadingMore ? 'disabled' : ''}>${feedLoadingMore ? t('loading_more') : t('btn_load_more')}</button>` : '';
+    const b = document.getElementById('loadMoreBtn'); if(b) b.onclick = () => loadMoreFeedPosts(category);
+  }
+}
+async function loadMoreFeedPosts(category){
+  if(feedLoadingMore || !feedHasMore) return;
+  feedLoadingMore = true; filterAndRenderPosts(category);
+  const next = await fetchPostsPage(category, allFetchedPosts.length, FEED_PAGE_SIZE);
+  allFetchedPosts = allFetchedPosts.concat(next); feedHasMore = next.length === FEED_PAGE_SIZE; feedLoadingMore = false;
+  filterAndRenderPosts(category);
+}
+
+const ratingOptions = cur => `<option value="">${t('rating_none')}</option>` + [1,2,3,4,5].map(n => `<option value="${n}" ${cur === n ? 'selected' : ''}>${'★'.repeat(n)}${'☆'.repeat(5-n)} (${n}/5)</option>`).join('');
+
+async function renderFeed(category){
+  currentSortMode = 'yeni'; currentMediaTypeFilter = 'all'; currentSearchQuery = ''; feedHasMore = true; feedLoadingMore = false;
+  startFeedRealtime(category);
+  const special = category === 'oyun' ? `<div class="field"><label>${t('label_game_store_link')}</label><input type="url" id="np-special-link" placeholder="${t('game_link_placeholder')}"></div>`
+    : category === 'film' ? `<div class="field"><label>${t('label_movie_review_link')}</label><input type="url" id="np-special-link" placeholder="${t('movie_link_placeholder')}"></div>` : '';
+
+  mainEl.innerHTML = `<div class="feed-header"><h2>${catLabel(category)}</h2></div>
+    <div class="stats-banner" id="user-stats-area"><span>${t('stats_loading')}</span></div>
+    <div class="new-post-box"><h3>${t('new_post_heading')}</h3>
+      <form id="newPostForm">
+        <div class="field"><label>${t('label_post_title')}</label><input type="text" id="np-title" maxlength="120" required placeholder="${t('post_title_placeholder')}"></div>
+        <div class="field"><label>${t('label_post_content')}</label><textarea id="np-content" maxlength="4000" required placeholder="${t('post_content_placeholder')}"></textarea><div class="counter" id="charCounter">0 / 4000</div></div>
+        ${special}
+        <div class="form-row-grid" style="margin-top:20px">
+          <div class="field"><label>${t('label_image_url')}</label><input type="url" id="np-image-url" data-upload="image" placeholder="${t('image_url_placeholder')}"></div>
+          <div class="field"><label>${t('label_video_url')}</label><input type="url" id="np-video-url" data-upload="video" placeholder="${t('video_url_placeholder')}"></div>
+        </div>
+        <div class="form-row-grid">
+          <div class="field"><label>${t('label_image_url_2')}</label><input type="url" id="np-image-url-2" data-upload="image" placeholder="${t('image_url_placeholder')}"></div>
+          <div class="field"><label>${t('label_image_url_3')}</label><input type="url" id="np-image-url-3" data-upload="image" placeholder="${t('image_url_placeholder')}"></div>
+        </div>
+        <div class="form-row-grid">
+          <div class="field"><label>${t('label_hashtags')}</label><input type="text" id="np-hashtags" placeholder="${t('hashtags_placeholder')}"></div>
+          ${(category === 'oyun' || category === 'film') ? `<div class="field"><label>${t('label_rating')}</label><select id="np-rating">${ratingOptions()}</select></div>` : ''}
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="np-spoiler" style="width:auto"><label for="np-spoiler" style="margin:0;font-size:13px">${t('label_is_spoiler')}</label></div>
+        <button type="submit" class="btn" style="margin-top:14px">${t('btn_publish_post')}</button>
+      </form></div>
+    <div class="search-filter-bar">
+      <div class="search-group"><input type="text" id="postSearch" class="search-input" placeholder="${t('search_placeholder')}">
+        <div class="filter-tags"><button class="filter-btn active" data-filter="all">${t('filter_all')}</button><button class="filter-btn" data-filter="image">${t('filter_images')}</button><button class="filter-btn" data-filter="video">${t('filter_videos')}</button></div></div>
+      <div class="sort-tags"><button class="sort-btn active" data-sort="yeni">${t('sort_new')}</button><button class="sort-btn" data-sort="populer">${t('sort_popular')}</button><button class="sort-btn" data-sort="trend">${t('sort_trend')}</button></div>
+    </div>
+    <div id="postList">${t('db_scanning')}</div><div id="loadMoreWrap" style="margin-top:14px"></div>`;
+
+  const counter = document.getElementById('charCounter');
+  document.getElementById('np-content').oninput = e => { counter.textContent = `${e.target.value.length} / 4000`; };
+  document.getElementById('postSearch').oninput = e => { currentSearchQuery = e.target.value.trim().toLowerCase(); filterAndRenderPosts(category); };
+  const bindToggle = (sel, attr, set) => document.querySelectorAll(sel).forEach(b => b.onclick = () => {
+    document.querySelectorAll(sel).forEach(x => x.classList.remove('active')); b.classList.add('active'); set(b.dataset[attr]); filterAndRenderPosts(category);
+  });
+  bindToggle('.filter-btn', 'filter', v => currentMediaTypeFilter = v);
+  bindToggle('.sort-btn', 'sort', v => currentSortMode = v);
+
+  const form = document.getElementById('newPostForm');
+  restorePostDraft(category); watchPostDraft(category, form); enhanceUploadFields(form);
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+    const title = v('np-title'), content = v('np-content'), link = v('np-special-link');
+    if(!title || !content) return;
+    const ratingV = v('np-rating'), hRaw = v('np-hashtags');
+    const { data: inserted, error } = await supabase.from('posts').insert({
+      category, title, content, image_url: v('np-image-url') || null, image_url_2: v('np-image-url-2') || null, image_url_3: v('np-image-url-3') || null,
+      video_url: getVideoFieldValue(document.getElementById('np-video-url')) || null, author_id: currentUser.id, tags: link ? [link] : null,
+      hashtags: hRaw ? hRaw.split(',').map(h => h.trim().replace(/^#/, '')).filter(Boolean) : null,
+      is_spoiler: document.getElementById('np-spoiler').checked, rating: ratingV ? parseInt(ratingV, 10) : null
+    }).select('id, category, title, content, image_url, image_url_2, image_url_3, video_url, tags, hashtags, is_spoiler, rating, author_id, created_at').single();
+    if(error){ alert(t('err_action_failed') + error.message); return; }
+    if(!allFetchedPosts.some(p => p.id === inserted.id))
+      allFetchedPosts.unshift({ ...inserted, profiles: { nickname: currentProfile.nickname, avatar_url: currentProfile.avatar_url }, likeCount: 0, dislikeCount: 0, myReaction: null, isFav: false });
+    setDraft('post:' + category, null); form.reset();
+    delete document.getElementById('np-video-url').dataset.videoParts;
+    form.querySelectorAll('.upload-status').forEach(el => el.textContent = '');
+    counter.textContent = '0 / 4000';
+    filterAndRenderPosts(category);
+  };
+  allFetchedPosts = await fetchPostsPage(category, 0, FEED_PAGE_SIZE);
+  feedHasMore = allFetchedPosts.length === FEED_PAGE_SIZE;
+  filterAndRenderPosts(category);
+}
+const loadFeedData = async category => { allFetchedPosts = await fetchPostsPage(category, 0, FEED_PAGE_SIZE); feedHasMore = allFetchedPosts.length === FEED_PAGE_SIZE; filterAndRenderPosts(category); };
+
+async function refreshSinglePostReactions(postId){
+  const { data: r } = await supabase.from('post_reactions').select('user_id, type').eq('post_id', postId);
+  const idx = allFetchedPosts.findIndex(p => p.id === postId);
+  if(idx !== -1) allFetchedPosts[idx] = { ...allFetchedPosts[idx], likeCount: (r||[]).filter(x => x.type === 'like').length, dislikeCount: (r||[]).filter(x => x.type === 'dislike').length, myReaction: (r||[]).find(x => x.user_id === currentUser.id)?.type || null };
+}
+function startFeedRealtime(category){
+  stopFeedRealtime();
+  feedChannel = supabase.channel('feed-' + category)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts', filter: `category=eq.${category}` }, async payload => {
+      const np = payload.new; if(allFetchedPosts.some(p => p.id === np.id)) return;
+      const { data: ap } = await supabase.from('profiles').select('nickname, avatar_url').eq('id', np.author_id).maybeSingle();
+      allFetchedPosts.unshift({ ...np, profiles: { nickname: ap?.nickname || '?', avatar_url: ap?.avatar_url || null }, likeCount: 0, dislikeCount: 0, myReaction: null, isFav: false });
+      filterAndRenderPosts(category);
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'posts', filter: `category=eq.${category}` }, payload => {
+      const i = allFetchedPosts.findIndex(p => p.id === payload.new.id); if(i === -1) return;
+      allFetchedPosts[i] = { ...allFetchedPosts[i], ...payload.new }; filterAndRenderPosts(category);
+    })
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'posts', filter: `category=eq.${category}` }, payload => {
+      allFetchedPosts = allFetchedPosts.filter(p => p.id !== payload.old.id); filterAndRenderPosts(category);
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'post_reactions' }, async payload => {
+      const id = payload.new?.post_id || payload.old?.post_id;
+      if(!id || !allFetchedPosts.some(p => p.id === id)) return;
+      await refreshSinglePostReactions(id); filterAndRenderPosts(category);
+    }).subscribe();
+}
+function stopFeedRealtime(){ if(feedChannel){ supabase.removeChannel(feedChannel); feedChannel = null; } }
+
+function renderPostCard(p){
+  // Admin başkasının gönderisini silemez: sadece yazar veya kurucu
+  const canDelete = isFounder() || p.author_id === currentUser.id;
+  const canEdit = p.author_id === currentUser.id;
+  let special = '';
+  if(p.tags && p.tags[0] && (p.category === 'oyun' || p.category === 'film'))
+    special = `<a href="${safeUrl(p.tags[0])}" target="_blank" rel="noopener noreferrer" class="special-link-btn">${p.category === 'oyun' ? t('store_link_btn') : t('review_link_btn')}</a>`;
+  const rating = p.rating ? `<div class="post-rating">${'★'.repeat(p.rating)}${'☆'.repeat(5 - p.rating)} (${p.rating}/5)</div>` : '';
+  const tags = p.hashtags && p.hashtags.length ? `<div class="hashtag-row">${p.hashtags.map(h => `<span class="hashtag-pill" data-hashtag="${escapeHtml(h)}">#${escapeHtml(h)}</span>`).join('')}</div>` : '';
+  const img = u => `<div class="post-media-wrap"><img src="${escapeHtml(u)}" class="post-img" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`;
+  const extra = [p.image_url_2, p.image_url_3].filter(Boolean);
+  let media = '';
+  if(p.image_url) media += extra.length ? `<div class="post-gallery">${img(p.image_url)}${extra.map(img).join('')}</div>` : img(p.image_url);
+  if(p.video_url){
+    const parts = getVideoParts(p.video_url);
+    if(parts.length > 1){
+      media += `<div class="post-media-wrap" style="padding:14px;text-align:center"><div style="color:var(--dim);font-size:12px;margin-bottom:10px">Video parçaları gizli tutulur.</div><button class="btn small" data-action="download-video" data-video-parts="${escapeHtml(JSON.stringify(parts))}">⬇ Videoyu tek dosya indir</button></div>`;
+    } else {
+      const u = parts[0] || '', yt = extractYouTubeId(u);
+      if(yt) media += `<div class="post-media-wrap"><div class="post-video-container"><div class="yt-facade" data-yt="${yt}" style="background-image:url('https://i.ytimg.com/vi/${yt}/hqdefault.jpg')"><span>▶</span></div></div></div>`;
+      else if(u.startsWith('http')) media += `<div class="post-media-wrap"><video src="${escapeHtml(u)}" class="post-video-element" controls preload="none"></video></div>`;
+    }
+  }
+  const body = `${rating}<div class="post-title">${escapeHtml(p.title)}</div><div class="post-content">${escapeHtml(p.content)}</div>${special}${tags}${media}`;
+  const block = p.is_spoiler ? `<div class="spoiler-wrap"><div class="spoiler-blur">${body}</div><div class="spoiler-overlay"><button type="button" class="spoiler-reveal-btn" data-action="reveal-spoiler">${t('btn_reveal_spoiler')}</button></div></div>` : body;
+  return `<div class="post-card" data-post-id="${p.id}">
+    <div class="post-meta">${avatarHtml(p.profiles)}<span class="author">${escapeHtml(p.profiles?.nickname || (currentLang === 'en' ? 'Anonymous' : 'Anonim'))}</span><span>·</span><span>${timeAgo(p.created_at)}</span>${p.is_spoiler ? `<span class="status-tag red">${t('spoiler_tag')}</span>` : ''}</div>
+    ${block}
+    <div class="post-actions">
+      <button class="react-btn ${p.myReaction === 'like' ? 'active-like' : ''}" data-action="like">▲ ${p.likeCount}</button>
+      <button class="react-btn ${p.myReaction === 'dislike' ? 'active-dislike' : ''}" data-action="dislike">▼ ${p.dislikeCount}</button>
+      <button class="react-btn ${p.isFav ? 'active-fav' : ''}" data-action="fav">${p.isFav ? '★' : '☆'} ${t('favorite_btn')}</button>
+      ${isAdminOrFounder() ? `<button class="react-btn" data-action="report">${t('report_btn')}</button>` : ''}
+      ${canEdit ? `<button class="react-btn" data-action="edit">${t('edit_btn')}</button>` : ''}
+      ${canDelete ? `<button class="react-btn" data-action="delete" style="margin-left:auto;color:#e26f6f">${t('delete_btn')}</button>` : ''}
+    </div></div>`;
+}
+
+function startEditPost(postId){
+  const idx = allFetchedPosts.findIndex(p => p.id === postId); if(idx === -1) return;
+  const p = allFetchedPosts[idx], card = document.querySelector(`.post-card[data-post-id="${postId}"]`); if(!card) return;
+  const hasLink = p.category === 'oyun' || p.category === 'film';
+  card.innerHTML = `<form class="edit-post-form">
+    <div class="field"><label>${t('label_post_title')}</label><input type="text" class="edit-title" value="${escapeHtml(p.title)}" maxlength="120" required></div>
+    <div class="field"><label>${t('label_post_content')}</label><textarea class="edit-content" maxlength="4000" required>${escapeHtml(p.content)}</textarea></div>
+    ${hasLink ? `<div class="field"><label>${t(p.category === 'oyun' ? 'label_game_store_link' : 'label_movie_review_link')}</label><input type="url" class="edit-special-link" value="${escapeHtml((p.tags && p.tags[0]) || '')}"></div>` : ''}
+    <div class="form-row-grid"><div class="field"><label>${t('label_image_url')}</label><input type="url" class="edit-image-url" data-upload="image" value="${escapeHtml(p.image_url || '')}"></div>
+      <div class="field"><label>${t('label_video_url')}</label><input type="url" class="edit-video-url" data-upload="video" value="${escapeHtml(p.video_url || '')}"></div></div>
+    <div class="form-row-grid"><div class="field"><label>${t('label_image_url_2')}</label><input type="url" class="edit-image-url-2" data-upload="image" value="${escapeHtml(p.image_url_2 || '')}"></div>
+      <div class="field"><label>${t('label_image_url_3')}</label><input type="url" class="edit-image-url-3" data-upload="image" value="${escapeHtml(p.image_url_3 || '')}"></div></div>
+    <div class="form-row-grid"><div class="field"><label>${t('label_hashtags')}</label><input type="text" class="edit-hashtags" value="${escapeHtml((p.hashtags || []).join(', '))}"></div>
+      ${hasLink ? `<div class="field"><label>${t('label_rating')}</label><select class="edit-rating">${ratingOptions(p.rating)}</select></div>` : ''}</div>
+    <div class="field" style="display:flex;align-items:center;gap:8px"><input type="checkbox" class="edit-spoiler" style="width:auto" ${p.is_spoiler ? 'checked' : ''}><label style="margin:0;font-size:13px">${t('label_is_spoiler')}</label></div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button type="submit" class="btn small">${t('save_btn')}</button><button type="button" class="btn ghost small" data-cancel>${t('cancel_btn')}</button></div></form>`;
+  enhanceUploadFields(card);
+  const q = s => card.querySelector(s);
+  q('.edit-post-form').onsubmit = async e => {
+    e.preventDefault();
+    const title = q('.edit-title').value.trim(), content = q('.edit-content').value.trim(); if(!title || !content) return;
+    const sl = q('.edit-special-link'), hr = q('.edit-hashtags').value.trim(), rs = q('.edit-rating');
+    const upd = {
+      title, content, image_url: q('.edit-image-url').value.trim() || null, video_url: getVideoFieldValue(q('.edit-video-url')) || null,
+      image_url_2: q('.edit-image-url-2').value.trim() || null, image_url_3: q('.edit-image-url-3').value.trim() || null,
+      tags: sl && sl.value.trim() ? [sl.value.trim()] : null,
+      hashtags: hr ? hr.split(',').map(h => h.trim().replace(/^#/, '')).filter(Boolean) : null,
+      rating: rs && rs.value ? parseInt(rs.value, 10) : null, is_spoiler: q('.edit-spoiler').checked
+    };
+    const { error } = await supabase.from('posts').update(upd).eq('id', postId);
+    if(error){ alert(t('err_action_failed') + error.message); return; }
+    allFetchedPosts[idx] = { ...p, ...upd }; filterAndRenderPosts(p.category);
+  };
+  q('[data-cancel]').onclick = () => filterAndRenderPosts(p.category);
+}
+
+function attachPostHandlers(category){
+  document.querySelectorAll('.post-card').forEach(card => {
+    const postId = card.dataset.postId;
+    card.querySelectorAll('[data-action]').forEach(btn => btn.onclick = async () => {
+      const a = btn.dataset.action;
+      if(a === 'like' || a === 'dislike'){ await toggleReaction(postId, a); filterAndRenderPosts(category); }
+      else if(a === 'fav'){ await toggleFavorite(postId); filterAndRenderPosts(category); }
+      else if(a === 'edit') startEditPost(postId);
+      else if(a === 'delete'){
+        if(!confirm(t('confirm_delete_post'))) return;
+        const { error } = await supabase.from('posts').delete().eq('id', postId);
+        if(error){ alert(t('err_action_failed') + error.message); return; }
+        allFetchedPosts = allFetchedPosts.filter(p => p.id !== postId); filterAndRenderPosts(category);
+      } else if(a === 'report'){
+        const msg = prompt(t('report_prompt'));
+        if(msg){ await supabase.from('founder_messages').insert({ sender_id: currentUser.id, content: `[RAPOR - ID:${postId}] ${msg}` }); alert(t('report_success')); }
+      } else if(a === 'download-video'){
+        let urls = []; try{ urls = JSON.parse(btn.dataset.videoParts || '[]'); }catch(e){}
+        if(urls.length) await downloadMergedVideo(urls, `video-${postId}.mp4`, btn);
+      } else if(a === 'reveal-spoiler'){
+        const w = card.querySelector('.spoiler-wrap');
+        if(w){ w.querySelector('.spoiler-blur')?.classList.remove('spoiler-blur'); w.querySelector('.spoiler-overlay')?.remove(); }
+      }
+    });
+    card.querySelectorAll('[data-hashtag]').forEach(pill => pill.onclick = () => {
+      currentSearchQuery = pill.dataset.hashtag.toLowerCase();
+      const si = document.getElementById('postSearch'); if(si) si.value = pill.dataset.hashtag;
+      filterAndRenderPosts(category);
+    });
+  });
+}
+
+function updateLocalReaction(postId, type){
+  const i = allFetchedPosts.findIndex(p => p.id === postId); if(i === -1) return;
+  const p = allFetchedPosts[i]; let l = p.likeCount, d = p.dislikeCount;
+  if(p.myReaction === 'like') l--; if(p.myReaction === 'dislike') d--;
+  if(type === 'like') l++; if(type === 'dislike') d++;
+  allFetchedPosts[i] = { ...p, likeCount: l, dislikeCount: d, myReaction: type };
+}
+async function toggleReaction(postId, type){
+  const cur = allFetchedPosts.find(p => p.id === postId)?.myReaction || null;
+  if(cur === type){ await supabase.from('post_reactions').delete().eq('post_id', postId).eq('user_id', currentUser.id); updateLocalReaction(postId, null); }
+  else { await supabase.from('post_reactions').upsert({ post_id: postId, user_id: currentUser.id, type }, { onConflict: 'post_id,user_id' }); updateLocalReaction(postId, type); }
+}
+async function toggleFavorite(postId){
+  const i = allFetchedPosts.findIndex(p => p.id === postId); if(i === -1) return;
+  const fav = allFetchedPosts[i].isFav;
+  if(fav) await supabase.from('favorites').delete().eq('post_id', postId).eq('user_id', currentUser.id);
+  else await supabase.from('favorites').upsert({ post_id: postId, user_id: currentUser.id }, { onConflict: 'user_id,post_id', ignoreDuplicates: true });
+  allFetchedPosts[i] = { ...allFetchedPosts[i], isFav: !fav };
+}
+
+/* ================= BİLDİRİM SAYFASI ================= */
+function renderNotifications(){
+  mainEl.innerHTML = `<div class="feed-header"><h2>${t('nav_bildirimler')}</h2>${notifications.length ? `<button class="btn ghost small" id="markAll">${t('btn_mark_all_read')}</button>` : ''}</div><div id="notifList"></div>`;
+  const listEl = document.getElementById('notifList'), ma = document.getElementById('markAll');
+  if(ma) ma.onclick = async () => {
+    const ids = notifications.map(n => n.id); notifications = []; updateTabTitleBadge(); renderNav(); renderNotifications();
+    await supabase.from('notifications').delete().in('id', ids);
+  };
+  if(!notifications.length){ listEl.innerHTML = `<div class="empty-state">${t('notif_empty')}</div>`; return; }
+  listEl.innerHTML = notifications.map(n => `<div class="app-row" data-notif-id="${n.id}" style="cursor:pointer"><div class="txt"><div class="who">${escapeHtml(n.nickname)} <span class="status-tag beklemede">${t('notif_new_message')}</span></div><div class="msg">${escapeHtml(n.content)}</div></div></div>`).join('');
+  listEl.querySelectorAll('[data-notif-id]').forEach(row => row.onclick = async () => {
+    const n = notifications.find(x => x.id === row.dataset.notifId); if(!n) return;
+    notifications = notifications.filter(x => x.id !== n.id); updateTabTitleBadge(); renderNav();
+    await supabase.from('notifications').delete().eq('id', n.id);
+    window.location.hash = '#/dm/' + n.senderId;
+  });
+}
+
+/* ================= ARKADAŞLAR ================= */
+async function renderFriends(){
+  mainEl.innerHTML = `<div class="feed-header"><h2>${t('friends_heading')}</h2></div><div class="empty-state">${t('admin_sync')}</div>`;
+  const fr = (sel, col, status) => supabase.from('friend_requests').select(sel).eq(col, currentUser.id).eq('status', status);
+  const [{ data: incoming }, { data: outgoing }, { data: asSender }, { data: asReceiver }] = await Promise.all([
+    fr('id, sender_id, profiles!friend_requests_sender_id_fkey(nickname)', 'receiver_id', 'bekliyor'),
+    fr('id, receiver_id, profiles!friend_requests_receiver_id_fkey(nickname)', 'sender_id', 'bekliyor'),
+    fr('receiver_id, profiles!friend_requests_receiver_id_fkey(nickname)', 'sender_id', 'kabul'),
+    fr('sender_id, profiles!friend_requests_sender_id_fkey(nickname)', 'receiver_id', 'kabul'),
+  ]);
+  const fm = new Map();
+  [...(asSender || []).map(f => ({ id: f.receiver_id, nickname: f.profiles?.nickname })), ...(asReceiver || []).map(f => ({ id: f.sender_id, nickname: f.profiles?.nickname }))]
+    .forEach(f => { if(!fm.has(f.id)) fm.set(f.id, f); });
+  const friends = [...fm.values()], dimTxt = k => `<div style="color:var(--dim);font-size:13px">${t(k)}</div>`;
+
+  mainEl.innerHTML = `<div class="feed-header"><h2>${t('friends_heading')}</h2></div>
+    <div class="new-post-box"><h3>${t('friends_search_heading')}</h3>
+      <form id="fsForm" style="display:flex;gap:8px"><input type="text" id="fsInput" class="search-input" placeholder="${t('friend_search_placeholder')}" required><button type="submit" class="btn">${t('btn_search')}</button></form>
+      <div id="fsResults" style="margin-top:14px"></div></div>
+    <div class="admin-section"><h3>${t('incoming_requests_heading')}</h3>${(incoming || []).length ? incoming.map(r => `<div class="app-row" data-request-id="${r.id}"><div class="txt"><div class="who">${escapeHtml(r.profiles?.nickname || '?')}</div></div><div style="display:flex;gap:6px"><button class="btn small" data-req-action="kabul">${t('btn_accept')}</button><button class="btn ghost small" data-req-action="red">${t('btn_reject')}</button></div></div>`).join('') : dimTxt('no_pending_requests')}</div>
+    <div class="admin-section"><h3>${t('outgoing_requests_heading')}</h3>${(outgoing || []).length ? outgoing.map(r => `<div class="app-row"><div class="txt"><div class="who">${escapeHtml(r.profiles?.nickname || '?')} <span class="status-tag beklemede">${t('status_pending')}</span></div></div></div>`).join('') : dimTxt('no_sent_requests')}</div>
+    <div class="admin-section"><h3>${t('my_friends_heading')}</h3>${friends.length ? friends.map(f => `<div class="app-row"><div class="txt"><div class="who">${escapeHtml(f.nickname || '?')}</div></div><button class="btn small" data-chat-with="${f.id}">${t('btn_chat')}</button></div>`).join('') : dimTxt('no_friends_yet')}</div>`;
+
+  document.getElementById('fsForm').onsubmit = async e => {
+    e.preventDefault();
+    const q = document.getElementById('fsInput').value.trim().replace(/[%,()]/g, ''); if(!q) return;
+    const { data: res } = await supabase.from('profiles').select('id, nickname').ilike('nickname', `%${q}%`).neq('id', currentUser.id).limit(10);
+    const el = document.getElementById('fsResults');
+    if(!res || !res.length){ el.innerHTML = dimTxt('no_results_found'); return; }
+    el.innerHTML = res.map(u => `<div class="app-row"><div class="txt"><div class="who">${escapeHtml(u.nickname)}</div></div><button class="btn small" data-send-request="${u.id}">${t('btn_send_request')}</button></div>`).join('');
+    el.querySelectorAll('[data-send-request]').forEach(b => b.onclick = async () => {
+      const { error } = await supabase.from('friend_requests').insert({ sender_id: currentUser.id, receiver_id: b.dataset.sendRequest });
+      if(error){ alert(t('err_request_failed') + error.message); return; }
+      b.textContent = t('btn_sent'); b.disabled = true;
+    });
+  };
+  document.querySelectorAll('[data-req-action]').forEach(b => b.onclick = async () => {
+    await supabase.from('friend_requests').update({ status: b.dataset.reqAction }).eq('id', b.closest('.app-row').dataset.requestId);
+    renderFriends();
+  });
+  document.querySelectorAll('[data-chat-with]').forEach(b => b.onclick = () => { window.location.hash = '#/dm/' + b.dataset.chatWith; });
+}
+
+/* ================= SOHBET ================= */
+const canDeleteMessage = m => m.sender_id === currentUser.id || isFounder();
+
+async function renderChat(friendId){
+  const { data: fp } = await supabase.from('profiles').select('nickname').eq('id', friendId).maybeSingle();
+  if(!fp){ mainEl.innerHTML = `<div class="empty-state">${t('user_not_found')}</div>`; return; }
+  activeChatFriendId = friendId;
+  if(notifications.some(n => n.senderId === friendId)){ notifications = notifications.filter(n => n.senderId !== friendId); renderNav(); updateTabTitleBadge(); }
+  supabase.from('notifications').delete().eq('user_id', currentUser.id).eq('sender_id', friendId).then(() => {});
+
+  mainEl.innerHTML = `<div class="feed-header"><h2>💬 ${escapeHtml(fp.nickname)}</h2></div>
+    <div class="new-post-box chat-window"><div id="chatMessages" class="chat-messages"></div>
+    <form id="chatForm" class="chat-form"><input type="text" id="chatInput" class="search-input" maxlength="1000" placeholder="${t('chat_input_placeholder')}" required><button type="submit" class="btn">${t('btn_send')}</button></form></div>`;
+  const msgsEl = document.getElementById('chatMessages');
+
+  function renderMessages(msgs){
+    if(!msgs.length){ msgsEl.innerHTML = `<div class="empty-state">${t('no_messages_yet')}</div>`; return; }
+    msgsEl.innerHTML = msgs.map(m => {
+      const mine = m.sender_id === currentUser.id;
+      return `<div class="chat-bubble ${mine ? 'mine' : 'theirs'}" data-message-id="${m.id}"><div class="txt">${escapeHtml(m.content)}</div>
+        <div class="time">${timeAgo(m.created_at)}${m.edited_at ? ' · ' + t('edited_tag') : ''}${mine ? ` <span class="edit-msg-btn" data-action="edit-msg">${t('edit_btn')}</span>` : ''}${canDeleteMessage(m) ? ` <span class="edit-msg-btn" data-action="delete-msg">${t('delete_btn')}</span>` : ''}</div></div>`;
+    }).join('');
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+    msgsEl.querySelectorAll('[data-action="edit-msg"]').forEach(b => b.onclick = () => startEditMessage(b.closest('.chat-bubble')));
+    msgsEl.querySelectorAll('[data-action="delete-msg"]').forEach(b => b.onclick = async () => {
+      if(!confirm(t('confirm_delete_message'))) return;
+      await supabase.from('direct_messages').delete().eq('id', b.closest('.chat-bubble').dataset.messageId); await loadMessages();
+    });
+  }
+  function startEditMessage(bubble){
+    const id = bubble.dataset.messageId, cur = bubble.querySelector('.txt').textContent;
+    bubble.innerHTML = `<form class="edit-msg-form"><input type="text" class="search-input" value="${escapeHtml(cur)}" maxlength="1000" required><div style="display:flex;gap:6px;margin-top:8px"><button type="submit" class="btn small">${t('save_btn')}</button><button type="button" class="btn ghost small" data-cancel>${t('cancel_btn')}</button></div></form>`;
+    const form = bubble.querySelector('form'), input = form.querySelector('input'); input.focus();
+    form.onsubmit = async e => {
+      e.preventDefault(); const nc = input.value.trim(); if(!nc) return;
+      const { error } = await supabase.from('direct_messages').update({ content: nc, edited_at: new Date().toISOString() }).eq('id', id);
+      if(error) alert(t('err_message_edit_failed') + error.message);
+      await loadMessages();
+    };
+    form.querySelector('[data-cancel]').onclick = () => loadMessages();
+  }
+  async function loadMessages(){
+    const { data } = await supabase.from('direct_messages').select('id, sender_id, receiver_id, content, created_at, edited_at')
+      .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${currentUser.id})`)
+      .order('created_at', { ascending: true }).limit(300);
+    renderMessages(data || []);
+  }
+  await loadMessages();
+  const ci = document.getElementById('chatInput'); ci.value = drafts['dm:' + friendId] || ''; ci.addEventListener('input', () => setDraft('dm:' + friendId, ci.value));
+  document.getElementById('chatForm').onsubmit = async e => {
+    e.preventDefault();
+    const content = ci.value.trim(); if(!content) return;
+    ci.value = ''; setDraft('dm:' + friendId, null);
+    const { error } = await supabase.from('direct_messages').insert({ sender_id: currentUser.id, receiver_id: friendId, content });
+    if(error){ alert(t('err_message_send_failed') + error.message); return; }
+    await loadMessages();
+  };
+  if(dmChannel){ supabase.removeChannel(dmChannel); dmChannel = null; }
+  dmChannel = supabase.channel('dm-' + [currentUser.id, friendId].sort().join('-'))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'direct_messages' }, payload => {
+      const m = payload.new || {};
+      if((m.sender_id === currentUser.id && m.receiver_id === friendId) || (m.sender_id === friendId && m.receiver_id === currentUser.id) || payload.eventType === 'DELETE') loadMessages();
+    }).subscribe();
+}
+
+/* ================= DESTEK ================= */
+function renderDestek(){
+  mainEl.innerHTML = `<div class="feed-header"><div><h2>${t('destek_heading')}</h2><p style="color:var(--dim);font-size:14px;margin-top:6px">${t('destek_desc')}</p></div></div>
+    <div class="new-post-box"><form id="destekForm">
+      <div class="field"><label>${t('label_subject')}</label><input type="text" id="d-konu" maxlength="100" required placeholder="${t('subject_placeholder')}"></div>
+      <div class="field"><label>${t('label_detail')}</label><textarea id="d-detay" maxlength="1000" required placeholder="${t('detail_placeholder')}"></textarea></div>
+      <button type="submit" class="btn">${t('btn_send_support')}</button></form></div>`;
+  document.getElementById('destekForm').onsubmit = async e => {
+    e.preventDefault();
+    const konu = document.getElementById('d-konu').value.trim(), detay = document.getElementById('d-detay').value.trim(); if(!konu || !detay) return;
+    const { error } = await supabase.from('founder_messages').insert({ sender_id: currentUser.id, content: `[DESTEK] Konu: ${konu} | Detay: ${detay}` });
+    if(error){ alert(t('err_support_failed') + error.message); return; }
+    alert(t('support_success')); window.location.hash = '#/ana-sayfa';
+  };
+}
+
+/* ================= ADMİN PANELİ ================= */
+async function renderAdmin(){
+  startAdminRealtime();
+  const statusLabel = s => t('status_' + s);
+  let html = `<div class="feed-header"><h2>${t('admin_heading')}</h2></div>`;
+  if(isFounder()){
+    const [{ data: apps }, { data: messages }] = await Promise.all([
+      supabase.from('admin_applications').select('*, profiles!admin_applications_user_id_fkey(nickname)').order('created_at', { ascending: false }).limit(100),
+      supabase.from('founder_messages').select('*, profiles!founder_messages_sender_id_fkey(nickname, role)').order('created_at', { ascending: false }).limit(200)
+    ]);
+    html += `<div class="admin-section"><h3>${t('mod_applications_heading')}</h3>
+      ${(apps || []).length ? apps.map(a => `<div class="app-row" data-app-id="${a.id}"><div class="txt"><div class="who">${escapeHtml(a.profiles?.nickname || '?')} <span class="status-tag ${a.status}">${statusLabel(a.status)}</span></div><div class="msg">${escapeHtml(a.message)}</div></div>
+        ${a.status === 'beklemede' ? `<div style="display:flex;gap:6px"><button class="btn small" data-app-action="kabul">${t('btn_accept')}</button><button class="btn ghost small" data-app-action="red">${t('btn_reject')}</button></div>` : ''}</div>`).join('') : `<div style="color:var(--dim);font-size:13px">${t('no_applications')}</div>`}</div>
+      <div class="admin-section"><h3>${t('system_logs_heading')}</h3><div style="color:var(--warn);font-size:12px;margin-bottom:10px">${t('admin_note')}</div>
+      ${(messages || []).length ? messages.map(m => {
+        const fromAdmin = m.profiles?.role === 'admin';
+        return `<div class="msg-row ${fromAdmin ? 'yellow' : ''}"><div class="from">${escapeHtml(m.profiles?.nickname || '?')} ${fromAdmin ? `<span class="status-tag yellow">${t('admin_tag')}</span>` : ''} · ${timeAgo(m.created_at)}</div><div class="body">${escapeHtml(m.content)}</div></div>`;
+      }).join('') : `<div style="color:var(--dim);font-size:13px">${t('inbox_clean')}</div>`}</div>`;
+  } else {
+    const { data: myApp } = await supabase.from('admin_applications').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+    html += `<div class="admin-section"><h3>${t('application_form_heading')}</h3>
+      ${isAdminOrFounder() ? `<div style="color:var(--sick);font-size:13px">${t('role_sufficient')}</div>`
+        : myApp ? `<div>${t('request_status')} <span class="status-tag ${myApp.status}">${statusLabel(myApp.status)}</span><div class="msg" style="margin-top:6px">${escapeHtml(myApp.message)}</div></div>`
+        : `<form id="appForm"><div class="field"><label>${t('label_application_reason')}</label><textarea id="app-msg" required maxlength="500" placeholder="${t('application_placeholder')}"></textarea></div><button type="submit" class="btn">${t('btn_submit_form')}</button></form>`}</div>
+      <div class="admin-section"><h3>${t('contact_management_heading')}</h3><form id="msgForm"><div class="field"><label>${t('label_message_detail')}</label><textarea id="msg-content" required maxlength="1000" placeholder="${t('message_placeholder')}"></textarea></div><button type="submit" class="btn">${t('btn_send_message')}</button></form></div>`;
+  }
+  if(currentRoute() !== 'admin') return;
+  mainEl.innerHTML = html;
+
+  if(isFounder()){
+    document.querySelectorAll('[data-app-action]').forEach(btn => btn.onclick = async () => {
+      const appId = btn.closest('.app-row').dataset.appId, status = btn.dataset.appAction;
+      await supabase.from('admin_applications').update({ status }).eq('id', appId);
+      if(status === 'kabul'){
+        const { data: app } = await supabase.from('admin_applications').select('user_id').eq('id', appId).single();
+        if(app) await supabase.from('profiles').update({ role: 'admin' }).eq('id', app.user_id);
+      }
+      renderAdmin();
+    });
+  } else {
+    const af = document.getElementById('appForm');
+    if(af) af.onsubmit = async e => { e.preventDefault(); const m = document.getElementById('app-msg').value.trim(); if(!m) return; await supabase.from('admin_applications').insert({ user_id: currentUser.id, message: m }); renderAdmin(); };
+    const mf = document.getElementById('msgForm');
+    if(mf) mf.onsubmit = async e => {
+      e.preventDefault(); const c = document.getElementById('msg-content').value.trim(); if(!c) return;
+      await supabase.from('founder_messages').insert({ sender_id: currentUser.id, content: c });
+      alert(t('msg_sent_to_management')); document.getElementById('msg-content').value = '';
+    };
+  }
+}
+
+/* ================= YÖNLENDİRİCİ ================= */
+function render(){
+  if(!currentLang){ renderLanguageGate(); return; }
+  document.documentElement.lang = currentLang;
+  document.getElementById('siteFooter').textContent = t('footer_text');
+  updateTabTitleBadge();
+  if(currentUser && capacityFull){ renderCapacityFullScreen(); return; }
+  renderNav();
+  if(!currentUser){ renderAuthScreen(); return; }
+  if(!currentProfile){ renderCompleteProfile(); return; }
+  const route = currentRoute();
+  releaseMedia(mainEl);
+  if(!CATEGORY_KEYS.includes(route)){ allFetchedPosts = []; feedHasMore = true; feedLoadingMore = false; currentSearchQuery = ''; stopFeedRealtime(); }
+  if(dmChannel && route !== 'dm/' + activeChatFriendId){ supabase.removeChannel(dmChannel); dmChannel = null; activeChatFriendId = null; }
+  if(route !== 'admin') stopAdminRealtime();
+
+  if(route === 'ana-sayfa') renderHome();
+  else if(route === 'admin') renderAdmin();
+  else if(route === 'destek') renderDestek();
+  else if(route === 'arkadaslar') renderFriends();
+  else if(route === 'bildirimler') renderNotifications();
+  else if(route === 'yayinlar') renderGames();
+  else if(route.startsWith('dm/')) renderChat(route.slice(3));
+  else if(CATEGORY_KEYS.includes(route)) renderFeed(route);
+  else window.location.hash = '#/ana-sayfa';
+}
+
+function renderCompleteProfile(){
+  mainEl.innerHTML = `<div class="auth-wrap"><img src="${LOGO}" alt="" class="auth-logo"><h1>STRUD WEB</h1>
+    <form id="cpForm"><div class="field"><label>${t('label_nickname')}</label><input type="text" id="cp-nickname" required maxlength="24"></div>
+    <button type="submit" class="btn" style="width:100%">${t('setup_complete_btn')}</button><div id="cp-error" class="error-msg"></div></form>${langToggleHtml('cpLang')}</div>`;
+  attachLangToggle('cpLang');
+  document.getElementById('cpForm').onsubmit = async e => {
+    e.preventDefault();
+    const nickname = document.getElementById('cp-nickname').value.trim(); if(nickname.length < 3) return;
+    const { error } = await supabase.from('profiles').insert({ id: currentUser.id, nickname });
+    if(error){ document.getElementById('cp-error').textContent = t('err_nickname_taken'); return; }
+    await refreshSession(); window.location.hash = '#/ana-sayfa';
+  };
+}
+
+window.addEventListener('hashchange', render);
+
+// Sekme 2 dk gizli kalırsa canlı bağlantı kapanır; dönünce yenilenir
+let hiddenTimer = null, feedSuspended = false;
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){
+    clearTimeout(hiddenTimer);
+    hiddenTimer = setTimeout(() => { if(feedChannel){ stopFeedRealtime(); feedSuspended = true; } }, 120000);
+  } else {
+    clearTimeout(hiddenTimer);
+    if(feedSuspended){
+      feedSuspended = false;
+      const route = currentRoute();
+      if(currentUser && CATEGORY_KEYS.includes(route)){ startFeedRealtime(route); if(!mainEl.querySelector('.edit-post-form')) loadFeedData(route); }
+    }
+  }
+});
+
+refreshSession();
+</script>
+</body>
+</html>
