@@ -22,7 +22,7 @@ namespace StrudDownloader
         // Anon key herkese açık anahtardır (sitede de görünür), gizli değildir.
         public const string SupabaseUrl = "https://zxnsxueirtsxwxowlkfu.supabase.co";
         public const string AnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4bnN4dWVpcnRzeHd4b3dsa2Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ0MjI3NTUsImV4cCI6MjA5OTk5ODc1NX0.jpf11yI3rLR8oyIXAz5Fn3z-Z0sjnuLOwgb4d3U6gRk";
-        public const string FunctionName = "strud-download";
+        public const string FunctionName = "dynamic-responder";
     }
 
     class Chunk { public int I; public string Url; public long Size; public long PlainSize; public string Sha256; }
