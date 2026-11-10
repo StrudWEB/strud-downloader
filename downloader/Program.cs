@@ -122,7 +122,6 @@ namespace StrudDownloader
         [DllImport("bcrypt.dll")]
         static extern int BCryptCloseAlgorithmProvider(IntPtr hAlgorithm, int dwFlags);
 
-        // data = [12 bayt nonce][şifreli veri][16 bayt etiket]; ilk len bayt geçerli.
         public static byte[] Decrypt(byte[] key, byte[] data, int len, byte[] aad)
         {
             if (len < 28) throw new InvalidDataException("Parça çok kısa.");
@@ -292,10 +291,40 @@ namespace StrudDownloader
             return o;
         }
 
+        // İndirme logunu Supabase'deki game_downloads tablosuna kaydeden fonksiyon
+        public static async Task LogDownloadAsync(string gameId, string gameTitle, CancellationToken ct)
+        {
+            try
+            {
+                if (refresh == null) return;
+                await RefreshAsync(ct);
+
+                // Supabase /rest/v1/game_downloads tablosuna doğrudan INSERT atıyoruz
+                using (var req = new HttpRequestMessage(HttpMethod.Post, Config.SupabaseUrl + "/rest/v1/game_downloads"))
+                {
+                    req.Headers.TryAddWithoutValidation("apikey", Config.AnonKey);
+                    req.Headers.TryAddWithoutValidation("Authorization", "Bearer " + access);
+                    req.Headers.TryAddWithoutValidation("Prefer", "return=minimal");
+
+                    // Kullanıcı bilgilerini JWT token üzerinden çekmek yerine oturum açan kullanıcının e-postasını almak için 
+                    // basit bir payload gönderiyoruz. Tablodaki RLS politikası auth.uid() = user_id doğrulaması yapar.
+                    // Not: Supabase tablosunda user_id, nickname, email alanları otomatik doldurulabilir veya buradan gönderilebilir.
+                    var payload = new Dictionary<string, object>
+                    {
+                        { "game_id", gameId }
+                    };
+
+                    req.Content = new StringContent(Json.Write(payload), Encoding.UTF8, "application/json");
+                    await Http.SendAsync(req, ct);
+                }
+            }
+            catch { /* Loglama hatası indirmeyi engellemesin */ }
+        }
+
         static async Task<Dictionary<string, object>> CallAsync(object payload, CancellationToken ct)
         {
             if (refresh == null) throw new ApiException("Önce giriş yapmalısın.", 401);
-            await RefreshAsync(ct); // taze access token
+            await RefreshAsync(ct);
 
             using (var req = new HttpRequestMessage(HttpMethod.Post, Config.SupabaseUrl + "/functions/v1/" + Config.FunctionName))
             {
@@ -363,10 +392,12 @@ namespace StrudDownloader
             if (info != null && info.Version == offer.Version && File.Exists(Path.Combine(root, "game", info.Exe)))
             {
                 progress.Report(new ProgressInfo { Done = 1, Total = 1, Text = "Oyun zaten güncel." });
+                // Güncel olsa bile indirme sayılması isteniyorsa buraya da Log çağrısı konabilir, 
+                // ancak genelde sıfırdan kurulumda veya eksik indirmede sayılır. Yine de loglayabiliriz:
+                await Api.LogDownloadAsync(gameId, offer.Game, ct);
                 return;
             }
 
-            // Başka sürümden kalan yarım parçalar karışmasın.
             string marker = Path.Combine(tmp, "version.txt");
             if (Directory.Exists(tmp) && (!File.Exists(marker) || File.ReadAllText(marker) != offer.Version))
                 Directory.Delete(tmp, true);
@@ -375,7 +406,6 @@ namespace StrudDownloader
 
             byte[] key = Convert.FromBase64String(offer.Key);
 
-            // Daha önce bitmiş parçalar varsa kaldığı yerden devam et.
             done = offer.Chunks.Where(x => File.Exists(ChunkFile(x))).Sum(x => x.PlainSize);
             long startDone = done;
             clock.Restart();
@@ -426,7 +456,6 @@ namespace StrudDownloader
                 }
             }
 
-            // Birleştir
             progress.Report(new ProgressInfo { Done = offer.TotalPlain, Total = offer.TotalPlain, Text = "Parçalar birleştiriliyor..." });
             string zipPath = Path.Combine(tmp, "game.zip");
             using (var outFs = new FileStream(zipPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920, true))
@@ -436,7 +465,6 @@ namespace StrudDownloader
                         await inFs.CopyToAsync(outFs, 81920, ct);
             }
 
-            // Tüm dosya özeti varsa kontrol et (her parça zaten SHA-256 + GCM ile doğrulandı).
             if (!string.IsNullOrEmpty(offer.ZipSha256))
             {
                 progress.Report(new ProgressInfo { Done = offer.TotalPlain, Total = offer.TotalPlain, Text = "Dosya doğrulanıyor (SHA-256)..." });
@@ -453,7 +481,6 @@ namespace StrudDownloader
                 }
             }
 
-            // Aç
             progress.Report(new ProgressInfo { Done = offer.TotalPlain, Total = offer.TotalPlain, Text = "Oyun açılıyor..." });
             string gameDir = Path.Combine(root, "game");
             if (Directory.Exists(gameDir)) Directory.Delete(gameDir, true);
@@ -461,6 +488,10 @@ namespace StrudDownloader
 
             File.WriteAllText(InfoPath(root), Json.Write(new Dictionary<string, object> { { "version", offer.Version }, { "exe", offer.Exe } }));
             Directory.Delete(tmp, true);
+
+            // İndirme başarıyla bittiğinde veritabanına log atıyoruz!
+            await Api.LogDownloadAsync(gameId, offer.Game, ct);
+
             progress.Report(new ProgressInfo { Done = offer.TotalPlain, Total = offer.TotalPlain, Text = "Kurulum tamamlandı." });
         }
 
